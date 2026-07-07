@@ -1,36 +1,35 @@
 {
   "schema_version": 2,
   "source": "pubchem",
-  "last_collected_at": "2026-07-06T09:06:30Z",
-  "last_changed_at": "2026-07-06T09:06:30Z",
+  "last_collected_at": "2026-07-07T09:03:41Z",
+  "last_changed_at": "2026-07-07T09:03:41Z",
   "latest_file": "snapshots/clinical_trials/latest/trials.json",
-  "latest_checksum": "9b44e74e1b13ba99e1ba814c7cb25612881302ac0e637d2efc82c4272a268372",
+  "latest_checksum": "fe12d2881c340f1f74f3e493aa27f596550170ada69e48bb5f250be7202bf3a4",
   "latest_row_count": 90313,
-  "history_count": 31,
+  "history_count": 32,
   "last_pruned_count": 0,
-  "latest_snapshot": "snapshots/clinical_trials/history/trials_20260706T090630Z.json",
+  "latest_snapshot": "snapshots/clinical_trials/history/trials_20260707T090341Z.json",
   "history_counts": {
-    "trials": 31,
-    "compounds": 28,
+    "trials": 32,
+    "compounds": 29,
     "trials_compact": 29
   },
   "changed_assets": [
     "trials",
-    "compounds",
-    "trials_compact"
+    "compounds"
   ],
   "assets": {
     "trials": {
       "latest_file": "snapshots/clinical_trials/latest/trials.json",
-      "latest_checksum": "9b44e74e1b13ba99e1ba814c7cb25612881302ac0e637d2efc82c4272a268372",
+      "latest_checksum": "fe12d2881c340f1f74f3e493aa27f596550170ada69e48bb5f250be7202bf3a4",
       "latest_row_count": 90313,
-      "latest_snapshot": "snapshots/clinical_trials/history/trials_20260706T090630Z.json"
+      "latest_snapshot": "snapshots/clinical_trials/history/trials_20260707T090341Z.json"
     },
     "compounds": {
       "latest_file": "snapshots/clinical_trials/latest/compounds.json",
-      "latest_checksum": "03b320e16a8478872426daeef63025b4d72e1ee34072fcaa484e39da4e38b1f6",
+      "latest_checksum": "9da319b93b5acc55394c23aecc436424e489bbf4968b75d22d07522efeb0d55d",
       "latest_row_count": 12064,
-      "latest_snapshot": "snapshots/clinical_trials/history/compounds_20260706T090630Z.json"
+      "latest_snapshot": "snapshots/clinical_trials/history/compounds_20260707T090341Z.json"
     },
     "trials_compact": {
       "latest_file": "snapshots/clinical_trials/latest/trials_compact.json",
