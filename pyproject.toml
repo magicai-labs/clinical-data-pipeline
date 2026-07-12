@@ -1,6 +1,6 @@
 [project]
 name = "clinpipe"
-version = "0.6.2"
+version = "0.6.3"
 description = "A research-grade pipeline linking PubChem compounds with ClinicalTrials.gov study data"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.9"

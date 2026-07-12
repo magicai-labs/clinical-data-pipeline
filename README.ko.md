@@ -406,7 +406,7 @@ out_ctgov/
 
 ## 기여자
 
-- 강영묵 (Young-Mook Kang), 한국화학연구원 (Korea Research Institute of Chemical Technology, KRICT)
+- 강영묵 (Young-Mook Kang), 한국화학연구원 (Korea Research Institute of Chemical Technology, KRICT); National AI for Science Research Center (NAIS)
 
 ---
 

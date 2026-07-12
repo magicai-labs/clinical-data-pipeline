@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+## v0.6.3 - 2026-07-12
+
+### Changed
+
+- Updated Young-Mook Kang's contributor affiliation in the English and Korean READMEs to include both the Korea Research Institute of Chemical Technology (KRICT) and the National AI for Science Research Center (NAIS).
+
 ## v0.6.2 - 2026-07-12
 
 ### Changed
