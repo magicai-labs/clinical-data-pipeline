@@ -263,7 +263,10 @@ jobs:
           git commit -m "chore(data): incremental refresh pubchem trials snapshots (${COLLECTED_AT})"
           TARGET_BRANCH="${GITHUB_REF_NAME:-main}"
           echo "Pushing snapshots to branch: ${TARGET_BRANCH}"
-          git push origin HEAD:${TARGET_BRANCH}
+          python scripts/push_git_commit_with_retry.py \
+            --remote origin \
+            --branch "${TARGET_BRANCH}" \
+            --retries 3
 
       - name: Build run metrics
         if: always()
