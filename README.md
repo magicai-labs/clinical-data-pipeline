@@ -570,7 +570,7 @@ out_ctgov/
 
 ## Contributors
 
-- Young-Mook Kang (Korea Research Institute of Chemical Technology, KRICT)
+- Young-Mook Kang (Korea Research Institute of Chemical Technology, KRICT; National AI for Science Research Center, NAIS)
 
 ---
 
