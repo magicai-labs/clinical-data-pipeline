@@ -4,6 +4,9 @@ import subprocess
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path("scripts").resolve()))
+from push_git_commit_with_retry import is_non_retryable_push_error  # noqa: E402
+
 SCRIPT = Path("scripts/push_git_commit_with_retry.py").resolve()
 
 
@@ -55,3 +58,13 @@ def test_push_rebases_stale_snapshot_commit_without_force(tmp_path: Path):
     assert tree.splitlines() == ["base.txt", "code.txt", "snapshot.json"]
     messages = _git("--git-dir", str(remote), "log", "--format=%s", "main").stdout
     assert messages.splitlines()[:2] == ["snapshot", "advance main"]
+
+
+def test_large_file_rejection_is_not_retryable():
+    error = "remote: error: GH001: Large files detected. pre-receive hook declined"
+    assert is_non_retryable_push_error(error) is True
+
+
+def test_non_fast_forward_rejection_remains_retryable():
+    error = "! [rejected] HEAD -> main (fetch first)"
+    assert is_non_retryable_push_error(error) is False

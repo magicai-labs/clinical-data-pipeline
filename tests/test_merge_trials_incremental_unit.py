@@ -81,3 +81,8 @@ def test_merge_trials_incremental_unit(tmp_path: Path):
     compact = json.loads((out_dir / "trials_compact.json").read_text(encoding="utf-8"))
     assert len(compounds) == 3
     assert len(compact) == 3
+
+    # Keep large snapshot files below GitHub's limit by matching the full exporter's
+    # one-row-per-line representation instead of expanding every field with indent=2.
+    assert len((out_dir / "trials.json").read_text(encoding="utf-8").splitlines()) == 5
+    assert len((out_dir / "trials_compact.json").read_text(encoding="utf-8").splitlines()) == 5

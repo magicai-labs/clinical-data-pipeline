@@ -57,6 +57,18 @@ def _write_csv(path: Path, rows: List[Dict[str, object]], header: Sequence[str])
     return len(rows)
 
 
+def _write_json_array(path: Path, rows: Sequence[Dict[str, object]]) -> int:
+    """Match the full exporter format: one compact JSON object per line."""
+    with path.open("w", encoding="utf-8") as output:
+        output.write("[\n")
+        for index, row in enumerate(rows):
+            if index:
+                output.write(",\n")
+            output.write(json.dumps(row, ensure_ascii=False))
+        output.write("\n]\n")
+    return len(rows)
+
+
 def _extract_compounds(rows: Sequence[Dict[str, object]]) -> List[Dict[str, object]]:
     compounds_by_cid: Dict[int, Dict[str, object]] = {}
     for row in rows:
@@ -110,7 +122,7 @@ def main() -> int:
     cids_path = out_dir / "cids.txt"
     summary_path = out_dir / "summary.json"
 
-    json_path.write_text(json.dumps(merged_rows, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    _write_json_array(json_path, merged_rows)
 
     preferred_header = [
         "cid",
@@ -132,14 +144,29 @@ def main() -> int:
     csv_rows = _write_csv(csv_path, merged_rows, header)
 
     compounds_rows = _extract_compounds(merged_rows)
-    compounds_json_path.write_text(json.dumps(compounds_rows, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    compounds_json_path.write_text(
+        json.dumps(compounds_rows, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
     compounds_csv_rows = _write_csv(compounds_csv_path, compounds_rows, COMPOUND_FIELDS)
 
     compact_rows = _compact_rows(merged_rows)
-    compact_json_path.write_text(json.dumps(compact_rows, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    _write_json_array(compact_json_path, compact_rows)
     compact_header = _build_header(
         compact_rows,
-        ["cid", "collection", "collection_code", "id", "id_url", "title", "phase", "status", "date", "cids", "note", "error"],
+        [
+            "cid",
+            "collection",
+            "collection_code",
+            "id",
+            "id_url",
+            "title",
+            "phase",
+            "status",
+            "date",
+            "cids",
+            "note",
+            "error",
+        ],
     )
     compact_csv_rows = _write_csv(compact_csv_path, compact_rows, compact_header)
 
@@ -165,7 +192,9 @@ def main() -> int:
         "compounds_csv_rows": compounds_csv_rows,
         "trials_compact_csv_rows": compact_csv_rows,
     }
-    summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    summary_path.write_text(
+        json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
 
     print(f"base_rows: {len(base_rows)}")
     print(f"delta_rows: {len(delta_rows)}")
