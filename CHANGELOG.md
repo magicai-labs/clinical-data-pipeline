@@ -4,6 +4,16 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+## v0.6.2 - 2026-07-12
+
+### Changed
+
+- Added the README as the PyPI project description with Markdown rendering metadata.
+- Added PyPI project links for the repository, documentation, issues, and changelog.
+- Added package classifiers, research-oriented keywords, and explicit MIT license metadata.
+- Added PyPI, Python, CI, and license badges plus direct project links to the README.
+- Clarified that the package supports research data collection and does not provide medical advice.
+
 ## v0.6.0 - 2026-02-23
 
 ### Changed
