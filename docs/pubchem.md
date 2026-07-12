@@ -77,6 +77,14 @@ Methods:
 
 This is intended as a fallback layer when REST responses are incomplete for a CID.
 
+## Workflow run metrics
+
+The full and incremental collection workflows write `run_metrics.json` for every run, including unchanged and failed runs. Metrics are kept out of `main` so operational observations do not create snapshot commits or inflate the source/data history. The `metrics` branch contains only a short README and one immutable file per run at `runs/YYYY/MM/{mode}_{run_id}_{run_attempt}.json`.
+
+Each file records workflow identity and timing, dispatch parameters, shard/CID counts, scanned/new/changed/unchanged/error row counts, baseline and result checksums, final file size and row count, dataset/history change indicators, pruning information, changed assets, and warnings. Unknown values are `null`, not zero. The same file is available from the workflow run's Artifacts section for 90 days as `run-metrics-{mode}-{run_id}-{run_attempt}`.
+
+Unchanged runs are still written to the metrics branch, while `main` snapshot data remains commit-on-change. For reproducible paper analysis, fix and report the observation window's start and end dates before aggregating these files.
+
 Normalized trial rows use a common schema across collections:
 - collection (human-readable source name)
 - collection_code (raw SDQ collection code)

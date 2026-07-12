@@ -44,7 +44,7 @@ def test_update_pubchem_trials_history_unit(tmp_path: Path):
     assert r1.returncode == 0, r1.stderr
     assert "changed: true" in r1.stdout
     assert latest.exists()
-    assert len(list(history.glob("trials_*.json"))) == 1
+    assert len(list(history.glob("trials_[0-9]*.json"))) == 1
     assert flag.read_text(encoding="utf-8").strip() == "true"
 
     r2 = _run(
@@ -65,7 +65,7 @@ def test_update_pubchem_trials_history_unit(tmp_path: Path):
     )
     assert r2.returncode == 0, r2.stderr
     assert "changed: false" in r2.stdout
-    assert len(list(history.glob("trials_*.json"))) == 2
+    assert len(list(history.glob("trials_[0-9]*.json"))) == 2
     assert flag.read_text(encoding="utf-8").strip() == "false"
 
     state_obj = json.loads(state.read_text(encoding="utf-8"))
@@ -101,7 +101,7 @@ def test_update_pubchem_trials_history_snapshot_on_change(tmp_path: Path):
         ]
     )
     assert r1.returncode == 0, r1.stderr
-    assert len(list(history.glob("trials_*.json"))) == 1
+    assert len(list(history.glob("trials_[0-9]*.json"))) == 1
 
     r2 = _run(
         [
@@ -119,7 +119,7 @@ def test_update_pubchem_trials_history_snapshot_on_change(tmp_path: Path):
         ]
     )
     assert r2.returncode == 0, r2.stderr
-    assert len(list(history.glob("trials_*.json"))) == 1
+    assert len(list(history.glob("trials_[0-9]*.json"))) == 1
 
     trials.write_text('[{"id":"NCT1"},{"id":"NCT2"}]\n', encoding="utf-8")
 
@@ -139,7 +139,7 @@ def test_update_pubchem_trials_history_snapshot_on_change(tmp_path: Path):
         ]
     )
     assert r3.returncode == 0, r3.stderr
-    assert len(list(history.glob("trials_*.json"))) == 2
+    assert len(list(history.glob("trials_[0-9]*.json"))) == 2
 
 
 def test_update_pubchem_trials_history_retention_prunes_old(tmp_path: Path):
@@ -230,7 +230,7 @@ def test_update_pubchem_trials_history_with_aux_assets_unit(tmp_path: Path):
     assert latest_trials.exists()
     assert latest_compounds.exists()
     assert latest_compact.exists()
-    assert len(list(history.glob("trials_*.json"))) == 1
+    assert len(list(history.glob("trials_[0-9]*.json"))) == 1
     assert len(list(history.glob("compounds_*.json"))) == 1
     assert len(list(history.glob("trials_compact_*.json"))) == 1
 
@@ -265,7 +265,7 @@ def test_update_pubchem_trials_history_with_aux_assets_unit(tmp_path: Path):
     assert "changed: true" in r2.stdout
     assert "changed_assets: compounds" in r2.stdout
     assert flag.read_text(encoding="utf-8").strip() == "true"
-    assert len(list(history.glob("trials_*.json"))) == 1
+    assert len(list(history.glob("trials_[0-9]*.json"))) == 1
     assert len(list(history.glob("compounds_*.json"))) == 2
     assert len(list(history.glob("trials_compact_*.json"))) == 1
 

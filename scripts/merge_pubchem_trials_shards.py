@@ -10,6 +10,8 @@ import json
 from pathlib import Path
 from typing import Dict, Iterable, List, Sequence, Set, Tuple
 
+from run_metrics_lib import aggregate_shard_summary_files
+
 COMPOUND_FIELDS: Sequence[str] = (
     "cid",
     "smiles",
@@ -110,6 +112,11 @@ def _compact_rows(rows: Sequence[Dict[str, object]]) -> List[Dict[str, object]]:
     return [{k: v for k, v in row.items() if k not in TRIAL_COMPACT_DROP_FIELDS} for row in rows]
 
 
+def aggregate_shard_summaries(shard_dirs: Sequence[Path]) -> Tuple[Dict[str, int], List[str]]:
+    """Aggregate collector counters without losing missing-summary diagnostics."""
+    return aggregate_shard_summary_files(shard_dir / "summary.json" for shard_dir in shard_dirs)
+
+
 def main() -> int:
     p = argparse.ArgumentParser(prog="merge-pubchem-trials-shards")
     p.add_argument("--shard-dirs", required=True, help="Comma-separated shard output directories")
@@ -180,11 +187,12 @@ def main() -> int:
     cids = sorted({row.get("cid") for row in merged_rows if isinstance(row.get("cid"), int)})
     cids_txt.write_text("\n".join(str(x) for x in cids) + "\n", encoding="utf-8")
 
+    aggregate, warnings = aggregate_shard_summaries(shard_dirs)
     summary = {
         "schema_version": 1,
         "mode": "merged_from_shards",
         "shard_dirs": [str(p) for p in shard_dirs],
-        "n_shards": len(shard_dirs),
+        **aggregate,
         "n_input_rows": input_rows,
         "n_rows": len(merged_rows),
         "n_cids": len(cids),
@@ -197,6 +205,7 @@ def main() -> int:
         "trials_compact_json": str(compact_json_path),
         "trials_compact_csv": str(compact_csv_path),
         "cids_txt": str(cids_txt),
+        "warnings": warnings,
     }
     summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
