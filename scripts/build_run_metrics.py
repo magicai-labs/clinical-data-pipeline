@@ -2,11 +2,14 @@
 from __future__ import annotations
 
 import argparse
+import glob
 import json
 import os
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+from run_metrics_lib import aggregate_shard_summary_files, snapshot_history_created
 
 COUNTERS = (
     "n_shards",
@@ -27,8 +30,10 @@ def _read_json(path: Path | None, label: str, warnings: list[str]) -> dict[str, 
         return {}
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
-        return value if isinstance(value, dict) else {}
-    except (OSError, json.JSONDecodeError) as exc:
+        if not isinstance(value, dict):
+            raise ValueError("top-level JSON value is not an object")
+        return value
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
         warnings.append(f"invalid {label}: {path}: {exc}")
         return {}
 
@@ -54,6 +59,21 @@ def metrics_storage_path(mode: str, run_id: str, run_attempt: str, finished_at: 
 def build_metrics(args: argparse.Namespace) -> dict[str, Any]:
     warnings: list[str] = []
     summary = _read_json(args.summary, "summary", warnings)
+    if not summary and args.shard_summary_glob:
+        shard_paths = sorted(Path(path) for path in glob.glob(args.shard_summary_glob))
+        shard_summary, shard_warnings = aggregate_shard_summary_files(shard_paths)
+        warnings.extend(shard_warnings)
+        if shard_summary["n_shards"]:
+            summary = shard_summary
+            warnings.append(
+                "final summary unavailable; aggregated "
+                f"{shard_summary['n_shards']} completed shard summary file(s); "
+                "metrics may represent a partial run"
+            )
+        else:
+            warnings.append(
+                "final summary unavailable and no valid completed shard summaries were found"
+            )
     baseline = _read_json(args.baseline_state, "baseline state", warnings)
     result = _read_json(args.result_state, "result state", warnings)
 
@@ -76,21 +96,7 @@ def build_metrics(args: argparse.Namespace) -> dict[str, Any]:
     else:
         warnings.append(f"missing latest trials file: {args.latest_file or 'not specified'}")
 
-    result_snapshot = result.get("latest_snapshot")
-    baseline_snapshot = baseline.get("latest_snapshot")
-    baseline_counts = baseline.get("history_counts")
-    result_counts = result.get("history_counts")
-    if isinstance(baseline_counts, dict) and isinstance(result_counts, dict):
-        history_created = any(
-            isinstance(count, int) and count > int(baseline_counts.get(name, 0))
-            for name, count in result_counts.items()
-        )
-    elif result and baseline:
-        history_created = result_snapshot != baseline_snapshot
-    elif result and changed is True:
-        history_created = bool(result_snapshot)
-    else:
-        history_created = None
+    history_created = snapshot_history_created(baseline, result, changed)
     params = {
         name: os.environ.get(name.upper(), "")
         for name in (
@@ -159,6 +165,7 @@ def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--mode", required=True, choices=("full", "incremental"))
     p.add_argument("--summary", type=Path)
+    p.add_argument("--shard-summary-glob")
     p.add_argument("--baseline-state", type=Path)
     p.add_argument("--result-state", type=Path)
     p.add_argument("--latest-file", type=Path)

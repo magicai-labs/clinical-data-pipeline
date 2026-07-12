@@ -255,6 +255,7 @@ jobs:
           python scripts/build_run_metrics.py \
             --mode full \
             --summary out/pubchem_trials_dataset_gh/summary.json \
+            --shard-summary-glob "out/pubchem_trials_shards/s*/summary.json" \
             --baseline-state /tmp/baseline_collection_state.json \
             --result-state snapshots/clinical_trials/collection_state.json \
             --latest-file snapshots/clinical_trials/latest/trials.json \

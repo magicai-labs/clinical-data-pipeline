@@ -33,6 +33,7 @@ jobs:
             tests/test_merge_pubchem_trials_shards_unit.py \
             tests/test_merge_trials_incremental_unit.py \
             tests/test_run_metrics_unit.py \
+            tests/test_persist_run_metrics_integration.py \
             tests/test_update_pubchem_trials_history_unit.py
 
       - name: Build package

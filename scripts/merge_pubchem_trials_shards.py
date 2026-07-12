@@ -10,6 +10,8 @@ import json
 from pathlib import Path
 from typing import Dict, Iterable, List, Sequence, Set, Tuple
 
+from run_metrics_lib import aggregate_shard_summary_files
+
 COMPOUND_FIELDS: Sequence[str] = (
     "cid",
     "smiles",
@@ -112,36 +114,7 @@ def _compact_rows(rows: Sequence[Dict[str, object]]) -> List[Dict[str, object]]:
 
 def aggregate_shard_summaries(shard_dirs: Sequence[Path]) -> Tuple[Dict[str, int], List[str]]:
     """Aggregate collector counters without losing missing-summary diagnostics."""
-    totals = {
-        "n_shards": len(shard_dirs),
-        "n_cids_processed": 0,
-        "n_cids_total": 0,
-        "n_new_rows": 0,
-        "n_changed_rows": 0,
-        "n_skipped_unchanged_rows": 0,
-        "n_error_rows": 0,
-    }
-    warnings: List[str] = []
-    for shard_dir in shard_dirs:
-        path = shard_dir / "summary.json"
-        if not path.exists():
-            warnings.append(f"missing shard summary: {path}")
-            continue
-        try:
-            summary = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as exc:
-            warnings.append(f"invalid shard summary: {path}: {exc}")
-            continue
-        totals["n_cids_processed"] += int(summary.get("n_cids", 0))
-        # Every shard records the same unsliced CID universe; do not multiply it.
-        totals["n_cids_total"] = max(totals["n_cids_total"], int(summary.get("n_cids_total", 0)))
-        for key in ("n_new_rows", "n_changed_rows", "n_skipped_unchanged_rows", "n_error_rows"):
-            totals[key] += int(summary.get(key, 0))
-    totals["n_rows_scanned"] = (
-        totals["n_new_rows"] + totals["n_changed_rows"] + totals["n_skipped_unchanged_rows"]
-    )
-    totals["n_delta_rows"] = totals["n_new_rows"] + totals["n_changed_rows"]
-    return totals, warnings
+    return aggregate_shard_summary_files(shard_dir / "summary.json" for shard_dir in shard_dirs)
 
 
 def main() -> int:

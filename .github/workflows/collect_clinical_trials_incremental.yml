@@ -282,6 +282,7 @@ jobs:
           python scripts/build_run_metrics.py \
             --mode incremental \
             --summary out/pubchem_trials_dataset_delta/summary.json \
+            --shard-summary-glob "out/pubchem_trials_shards_delta/s*/summary.json" \
             --baseline-state /tmp/baseline_collection_state.json \
             --result-state snapshots/clinical_trials/collection_state.json \
             --latest-file snapshots/clinical_trials/latest/trials.json \
