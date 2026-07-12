@@ -10,6 +10,21 @@ def _git(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
     return subprocess.run(["git", *args], check=check, capture_output=True, text=True)
 
 
+def is_non_retryable_push_error(stderr: str) -> bool:
+    normalized = stderr.lower()
+    return any(
+        marker in normalized
+        for marker in (
+            "gh001: large files detected",
+            "exceeds github's file size limit",
+            "pre-receive hook declined",
+            "permission denied",
+            "authentication failed",
+            "repository not found",
+        )
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Rebase the current commit onto a remote branch and push with bounded retries."
@@ -49,6 +64,9 @@ def main() -> int:
         )
         if push.stderr.strip():
             print(push.stderr.strip())
+        if is_non_retryable_push_error(push.stderr):
+            print("::error::Push was rejected permanently; retrying cannot resolve this error.")
+            return 1
         if attempt < args.retries:
             time.sleep(attempt)
 
