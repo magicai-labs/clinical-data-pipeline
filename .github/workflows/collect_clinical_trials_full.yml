@@ -54,6 +54,14 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
+      - name: Initialize run metrics
+        run: |
+          date -u +"%Y-%m-%dT%H:%M:%SZ" > /tmp/run_started_at.txt
+          date -u +%s > /tmp/run_started_epoch.txt
+          if [ -f snapshots/clinical_trials/collection_state.json ]; then
+            cp snapshots/clinical_trials/collection_state.json /tmp/baseline_collection_state.json
+          fi
+
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
@@ -229,3 +237,56 @@ jobs:
           TARGET_BRANCH="${GITHUB_REF_NAME:-main}"
           echo "Pushing snapshots to branch: ${TARGET_BRANCH}"
           git push origin HEAD:${TARGET_BRANCH}
+
+      - name: Build run metrics
+        if: always()
+        continue-on-error: true
+        env:
+          HNID: ${{ github.event.inputs.hnid || '1856916' }}
+          EXTRA_HNIDS: ${{ github.event.inputs.extra_hnids || '' }}
+          LIMIT_CIDS: ${{ github.event.inputs.limit_cids || '' }}
+          LIMIT_PER_COLLECTION: ${{ github.event.inputs.limit_per_collection || '1000' }}
+          SHARD_SIZE: ${{ github.event.inputs.shard_size || '500' }}
+          SKIP_IMAGES: ${{ github.event.inputs.skip_images || 'true' }}
+          RETENTION_DAYS: ${{ github.event.inputs.retention_days || '180' }}
+        run: |
+          FINISHED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          echo "${FINISHED_AT}" > /tmp/run_finished_at.txt
+          python scripts/build_run_metrics.py \
+            --mode full \
+            --summary out/pubchem_trials_dataset_gh/summary.json \
+            --baseline-state /tmp/baseline_collection_state.json \
+            --result-state snapshots/clinical_trials/collection_state.json \
+            --latest-file snapshots/clinical_trials/latest/trials.json \
+            --changed-flag /tmp/pubchem_trials_changed.txt \
+            --started-at "$(cat /tmp/run_started_at.txt 2>/dev/null || true)" \
+            --finished-at "${FINISHED_AT}" \
+            --workflow-conclusion "${{ job.status }}" \
+            --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+      - name: Upload run metrics artifact
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v6
+        with:
+          name: run-metrics-full-${{ github.run_id }}-${{ github.run_attempt }}
+          path: run_metrics.json
+          retention-days: 90
+          if-no-files-found: warn
+
+      - name: Persist run metrics branch
+        if: always()
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ ! -f run_metrics.json ]; then
+            echo "::warning::run_metrics.json was not generated; metrics branch persistence skipped"
+            exit 0
+          fi
+          python scripts/persist_run_metrics.py \
+            --metrics-file run_metrics.json \
+            --mode full \
+            --run-id "${{ github.run_id }}" \
+            --run-attempt "${{ github.run_attempt }}" \
+            --finished-at "$(cat /tmp/run_finished_at.txt 2>/dev/null || date -u +'%Y-%m-%dT%H:%M:%SZ')"

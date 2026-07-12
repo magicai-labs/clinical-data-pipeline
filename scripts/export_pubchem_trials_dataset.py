@@ -15,7 +15,11 @@ from typing import Dict, Iterable, List, Optional, Sequence, Set, Tuple
 
 import requests
 
-from clinical_data_analyzer.pubchem import PubChemClassificationClient, PubChemClient, PubChemWebFallbackClient
+from clinical_data_analyzer.pubchem import (
+    PubChemClassificationClient,
+    PubChemClient,
+    PubChemWebFallbackClient,
+)
 
 COMPOUND_FIELDS: Sequence[str] = (
     "cid",
@@ -587,6 +591,10 @@ def main() -> int:
         "n_skipped_unchanged_rows": total_skipped_unchanged_rows,
         "n_cids_with_trials": total_with_trials,
         "n_error_rows": total_with_errors,
+        "n_shards": 1,
+        "n_cids_processed": len(cids),
+        "n_rows_scanned": total_new_rows + total_changed_rows + total_skipped_unchanged_rows,
+        "n_delta_rows": total_new_rows + total_changed_rows,
         "incremental_from": args.incremental_from,
         "jsonl": str(jsonl_path),
         "csv": str(csv_path),

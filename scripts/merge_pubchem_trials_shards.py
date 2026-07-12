@@ -110,6 +110,40 @@ def _compact_rows(rows: Sequence[Dict[str, object]]) -> List[Dict[str, object]]:
     return [{k: v for k, v in row.items() if k not in TRIAL_COMPACT_DROP_FIELDS} for row in rows]
 
 
+def aggregate_shard_summaries(shard_dirs: Sequence[Path]) -> Tuple[Dict[str, int], List[str]]:
+    """Aggregate collector counters without losing missing-summary diagnostics."""
+    totals = {
+        "n_shards": len(shard_dirs),
+        "n_cids_processed": 0,
+        "n_cids_total": 0,
+        "n_new_rows": 0,
+        "n_changed_rows": 0,
+        "n_skipped_unchanged_rows": 0,
+        "n_error_rows": 0,
+    }
+    warnings: List[str] = []
+    for shard_dir in shard_dirs:
+        path = shard_dir / "summary.json"
+        if not path.exists():
+            warnings.append(f"missing shard summary: {path}")
+            continue
+        try:
+            summary = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            warnings.append(f"invalid shard summary: {path}: {exc}")
+            continue
+        totals["n_cids_processed"] += int(summary.get("n_cids", 0))
+        # Every shard records the same unsliced CID universe; do not multiply it.
+        totals["n_cids_total"] = max(totals["n_cids_total"], int(summary.get("n_cids_total", 0)))
+        for key in ("n_new_rows", "n_changed_rows", "n_skipped_unchanged_rows", "n_error_rows"):
+            totals[key] += int(summary.get(key, 0))
+    totals["n_rows_scanned"] = (
+        totals["n_new_rows"] + totals["n_changed_rows"] + totals["n_skipped_unchanged_rows"]
+    )
+    totals["n_delta_rows"] = totals["n_new_rows"] + totals["n_changed_rows"]
+    return totals, warnings
+
+
 def main() -> int:
     p = argparse.ArgumentParser(prog="merge-pubchem-trials-shards")
     p.add_argument("--shard-dirs", required=True, help="Comma-separated shard output directories")
@@ -180,11 +214,12 @@ def main() -> int:
     cids = sorted({row.get("cid") for row in merged_rows if isinstance(row.get("cid"), int)})
     cids_txt.write_text("\n".join(str(x) for x in cids) + "\n", encoding="utf-8")
 
+    aggregate, warnings = aggregate_shard_summaries(shard_dirs)
     summary = {
         "schema_version": 1,
         "mode": "merged_from_shards",
         "shard_dirs": [str(p) for p in shard_dirs],
-        "n_shards": len(shard_dirs),
+        **aggregate,
         "n_input_rows": input_rows,
         "n_rows": len(merged_rows),
         "n_cids": len(cids),
@@ -197,6 +232,7 @@ def main() -> int:
         "trials_compact_json": str(compact_json_path),
         "trials_compact_csv": str(compact_csv_path),
         "cids_txt": str(cids_txt),
+        "warnings": warnings,
     }
     summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 

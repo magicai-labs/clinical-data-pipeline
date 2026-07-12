@@ -36,6 +36,32 @@ def test_merge_pubchem_trials_shards_unit(tmp_path: Path):
         json.dumps(row_b, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
+    (shard1 / "summary.json").write_text(
+        json.dumps(
+            {
+                "n_cids": 2,
+                "n_cids_total": 5,
+                "n_new_rows": 1,
+                "n_changed_rows": 1,
+                "n_skipped_unchanged_rows": 3,
+                "n_error_rows": 0,
+            }
+        ),
+        encoding="utf-8",
+    )
+    (shard2 / "summary.json").write_text(
+        json.dumps(
+            {
+                "n_cids": 1,
+                "n_cids_total": 5,
+                "n_new_rows": 2,
+                "n_changed_rows": 0,
+                "n_skipped_unchanged_rows": 4,
+                "n_error_rows": 1,
+            }
+        ),
+        encoding="utf-8",
+    )
 
     out_dir = tmp_path / "merged"
     result = subprocess.run(
@@ -52,7 +78,11 @@ def test_merge_pubchem_trials_shards_unit(tmp_path: Path):
     )
     assert result.returncode == 0, result.stderr
 
-    rows = [json.loads(x) for x in (out_dir / "trials.jsonl").read_text(encoding="utf-8").splitlines() if x.strip()]
+    rows = [
+        json.loads(x)
+        for x in (out_dir / "trials.jsonl").read_text(encoding="utf-8").splitlines()
+        if x.strip()
+    ]
     assert len(rows) == 2
 
     summary = json.loads((out_dir / "summary.json").read_text(encoding="utf-8"))
@@ -61,8 +91,38 @@ def test_merge_pubchem_trials_shards_unit(tmp_path: Path):
     assert summary["n_rows"] == 2
     assert summary["n_cids"] == 2
     assert summary["n_compounds"] == 2
+    assert summary["n_cids_processed"] == 3
+    assert summary["n_cids_total"] == 5
+    assert summary["n_new_rows"] == 3
+    assert summary["n_changed_rows"] == 1
+    assert summary["n_skipped_unchanged_rows"] == 7
+    assert summary["n_error_rows"] == 1
+    assert summary["n_rows_scanned"] == 11
+    assert summary["n_delta_rows"] == 4
 
     compounds = json.loads((out_dir / "compounds.json").read_text(encoding="utf-8"))
     compact = json.loads((out_dir / "trials_compact.json").read_text(encoding="utf-8"))
     assert len(compounds) == 2
     assert len(compact) == 2
+
+
+def test_merge_warns_when_shard_summary_is_missing(tmp_path: Path):
+    shard = tmp_path / "shard"
+    shard.mkdir()
+    (shard / "trials.jsonl").write_text('{"cid": 1}\n', encoding="utf-8")
+    out_dir = tmp_path / "merged"
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/merge_pubchem_trials_shards.py",
+            "--shard-dirs",
+            str(shard),
+            "--out-dir",
+            str(out_dir),
+        ],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stderr
+    summary = json.loads((out_dir / "summary.json").read_text(encoding="utf-8"))
+    assert summary["warnings"] == [f"missing shard summary: {shard / 'summary.json'}"]
