@@ -1,13 +1,25 @@
 # clinical-data-pipeline
 
+[![PyPI version](https://img.shields.io/pypi/v/clinpipe.svg)](https://pypi.org/project/clinpipe/)
+[![Python versions](https://img.shields.io/pypi/pyversions/clinpipe.svg)](https://pypi.org/project/clinpipe/)
+[![Package CI](https://github.com/magicai-labs/clinical-data-pipeline/actions/workflows/package_ci.yml/badge.svg)](https://github.com/magicai-labs/clinical-data-pipeline/actions/workflows/package_ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/magicai-labs/clinical-data-pipeline/blob/main/LICENSE)
+
 A research-grade pipeline for collecting, normalizing, and linking
 **clinical compound data from PubChem** with **clinical trial documents from ClinicalTrials.gov**.
 
-Korean README: README.ko.md
+[Korean README](https://github.com/magicai-labs/clinical-data-pipeline/blob/main/README.ko.md)
+
+- [GitHub repository](https://github.com/magicai-labs/clinical-data-pipeline)
+- [Documentation](https://github.com/magicai-labs/clinical-data-pipeline/tree/main/docs)
+- [Issue tracker](https://github.com/magicai-labs/clinical-data-pipeline/issues)
 
 This repository focuses on **reproducible, API-based data collection**.
 It prioritizes official APIs and uses web-derived fallbacks only when PubChem REST payloads
 do not expose trial IDs for specific compounds.
+
+> This package is intended for research data collection and analysis. It does not
+> provide medical advice, clinical recommendations, or regulatory conclusions.
 
 ---
 
