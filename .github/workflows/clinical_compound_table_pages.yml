@@ -42,12 +42,30 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p out/pubchem_trials_dataset_gh
-          cp snapshots/clinical_trials/latest/trials.json out/pubchem_trials_dataset_gh/trials.json
-          if [ -f snapshots/clinical_trials/latest/compounds.json ]; then
-            cp snapshots/clinical_trials/latest/compounds.json out/pubchem_trials_dataset_gh/compounds.json
+          if [ -f snapshots/clinical_trials/latest/trials/manifest.json ]; then
+            python scripts/snapshot_shards.py materialize \
+              --manifest snapshots/clinical_trials/latest/trials/manifest.json \
+              --output out/pubchem_trials_dataset_gh/trials.json
+          else
+            cp snapshots/clinical_trials/latest/trials.json out/pubchem_trials_dataset_gh/trials.json
           fi
-          if [ -f snapshots/clinical_trials/latest/trials_compact.json ]; then
-            cp snapshots/clinical_trials/latest/trials_compact.json out/pubchem_trials_dataset_gh/trials_compact.json
+          if [ -f snapshots/clinical_trials/latest/compounds/manifest.json ] || [ -f snapshots/clinical_trials/latest/compounds.json ]; then
+            if [ -f snapshots/clinical_trials/latest/compounds/manifest.json ]; then
+              python scripts/snapshot_shards.py materialize \
+                --manifest snapshots/clinical_trials/latest/compounds/manifest.json \
+                --output out/pubchem_trials_dataset_gh/compounds.json
+            else
+              cp snapshots/clinical_trials/latest/compounds.json out/pubchem_trials_dataset_gh/compounds.json
+            fi
+          fi
+          if [ -f snapshots/clinical_trials/latest/trials_compact/manifest.json ] || [ -f snapshots/clinical_trials/latest/trials_compact.json ]; then
+            if [ -f snapshots/clinical_trials/latest/trials_compact/manifest.json ]; then
+              python scripts/snapshot_shards.py materialize \
+                --manifest snapshots/clinical_trials/latest/trials_compact/manifest.json \
+                --output out/pubchem_trials_dataset_gh/trials_compact.json
+            else
+              cp snapshots/clinical_trials/latest/trials_compact.json out/pubchem_trials_dataset_gh/trials_compact.json
+            fi
           fi
 
           python - <<'PY'
@@ -152,6 +170,11 @@ jobs:
           fi
           cp out/pubchem_trials_dataset_gh/summary.json site/summary.json
           cp out/pubchem_trials_dataset_gh/cids.txt site/cids.txt
+          for asset in trials compounds trials_compact; do
+            if [ -d "snapshots/clinical_trials/latest/${asset}" ]; then
+              cp -R "snapshots/clinical_trials/latest/${asset}" "site/${asset}_shards"
+            fi
+          done
 
       - name: Configure Pages
         uses: actions/configure-pages@v6

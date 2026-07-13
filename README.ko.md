@@ -303,13 +303,12 @@ PYTHONUNBUFFERED=1 conda run -n clinical-pipeline python -u scripts/collect_ctgo
 
 PubChem 스냅샷 저장 경로:
 
-- `snapshots/clinical_trials/latest/trials.json` (최신)
-- `snapshots/clinical_trials/latest/compounds.json` (CID 공통 화합물 캐시)
-- `snapshots/clinical_trials/latest/trials_compact.json` (trial 중심 경량 데이터)
-- `snapshots/clinical_trials/history/trials_*.json` (수집 시각별 히스토리)
-- `snapshots/clinical_trials/history/compounds_*.json` (CID 공통정보 히스토리)
-- `snapshots/clinical_trials/history/trials_compact_*.json` (경량 trial 히스토리)
+- `snapshots/clinical_trials/latest/{trials,compounds,trials_compact}/manifest.json` 및 결정적 `shard-*.json` 32개
+- `snapshots/clinical_trials/latest/{trials,compounds,trials_compact}.json` (전환 기간 단일 파일 호환본)
+- `snapshots/clinical_trials/history/<timestamp>/<asset>/manifest.json` 및 압축된 `shard-*.json.gz` 히스토리
 - `snapshots/clinical_trials/collection_state.json` (수집/변경 메타데이터, `source: pubchem` 포함)
+
+각 행은 `cid % 32`로 배정되므로 실행이 달라져도 같은 CID는 같은 샤드에 유지됩니다. manifest에는 행 수, 파일 크기, SHA-256, 원본 체크섬이 기록됩니다. GitHub Pages는 manifest를 우선 사용하고 기존 스냅샷에는 단일 JSON fallback을 사용합니다.
 
 로컬에서 수집 후 스냅샷 갱신:
 
@@ -323,7 +322,16 @@ python scripts/update_pubchem_trials_history.py \
   --latest-compounds-file snapshots/clinical_trials/latest/compounds.json \
   --latest-trials-compact-file snapshots/clinical_trials/latest/trials_compact.json \
   --history-dir snapshots/clinical_trials/history \
+  --shard-count 32 \
   --retention-days 365
+```
+
+단일 JSON 배열이 필요하면 샤드를 다시 합칠 수 있습니다.
+
+```bash
+python scripts/snapshot_shards.py materialize \
+  --manifest snapshots/clinical_trials/latest/trials/manifest.json \
+  --output out/trials.json
 ```
 
 대용량 수집용 shard + 병합 예시:

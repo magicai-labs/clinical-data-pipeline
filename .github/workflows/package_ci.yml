@@ -35,6 +35,7 @@ jobs:
             tests/test_run_metrics_unit.py \
             tests/test_persist_run_metrics_integration.py \
             tests/test_push_git_commit_with_retry_integration.py \
+            tests/test_snapshot_shards_unit.py \
             tests/test_update_pubchem_trials_history_unit.py
 
       - name: Build package

@@ -12,6 +12,11 @@ from pathlib import Path
 import shutil
 from typing import Dict, List
 
+try:
+    from snapshot_shards import write_shards
+except ModuleNotFoundError:  # imported as scripts.update_pubchem_trials_history
+    from scripts.snapshot_shards import write_shards
+
 
 def _now_utc_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -68,6 +73,16 @@ def _prune_old_snapshots(history_dir: Path, now_ts: datetime, retention_days: in
             if snap_ts < cutoff:
                 p.unlink(missing_ok=True)
                 deleted += 1
+    for timestamp_dir in history_dir.iterdir():
+        if not timestamp_dir.is_dir():
+            continue
+        try:
+            snap_ts = datetime.strptime(timestamp_dir.name, "%Y%m%dT%H%M%SZ").replace(tzinfo=timezone.utc)
+        except ValueError:
+            continue
+        if snap_ts < cutoff:
+            shutil.rmtree(timestamp_dir)
+            deleted += 1
     return deleted
 
 
@@ -81,6 +96,7 @@ def main() -> int:
     p.add_argument("--latest-compounds-file", default="snapshots/clinical_trials/latest/compounds.json")
     p.add_argument("--latest-trials-compact-file", default="snapshots/clinical_trials/latest/trials_compact.json")
     p.add_argument("--history-dir", default="snapshots/clinical_trials/history")
+    p.add_argument("--shard-count", type=int, default=32, help="Deterministic CID shard count")
     p.add_argument("--timestamp", default=None, help="UTC timestamp override (ISO8601)")
     p.add_argument(
         "--retention-days",
@@ -164,17 +180,28 @@ def main() -> int:
 
         latest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, latest)
+        latest_shard_dir = latest.parent / name
+        latest_manifest = write_shards(
+            src, latest_shard_dir, asset=name, generated_at=ts, shard_count=args.shard_count
+        )
 
         if (not args.snapshot_on_change) or changed:
             history_dir.mkdir(parents=True, exist_ok=True)
             snapshot_path = history_dir / f"{prefix}_{safe_ts}.json"
-            shutil.copy2(src, snapshot_path)
+            history_shard_dir = history_dir / safe_ts / name
+            write_shards(
+                src, history_shard_dir, asset=name, generated_at=ts,
+                shard_count=args.shard_count, compress=True,
+            )
+            snapshot_path = history_shard_dir / "manifest.json"
             snapshot_paths[name] = snapshot_path
 
         state_assets[name] = {
             "latest_file": str(latest),
             "latest_checksum": checksum,
             "latest_row_count": rows,
+            "latest_manifest": str(latest_shard_dir / "manifest.json"),
+            "shard_count": latest_manifest["shard_count"],
             "latest_snapshot": str(snapshot_paths.get(name)) if name in snapshot_paths else (
                 prev_asset.get("latest_snapshot") if isinstance(prev_asset, dict) else ""
             ),
@@ -192,6 +219,7 @@ def main() -> int:
             for p in history_dir.glob("*.json"):
                 if _parse_snapshot_timestamp(p, prefix) is not None:
                     n += 1
+            n += sum(1 for p in history_dir.glob(f"*/{name}/manifest.json"))
             history_counts[name] = n
     else:
         for asset in assets:
@@ -204,7 +232,7 @@ def main() -> int:
     latest_snapshot = str(trials_state.get("latest_snapshot", prev.get("latest_snapshot", "")))
 
     state = {
-        "schema_version": 2,
+        "schema_version": 3,
         "source": "pubchem",
         "last_collected_at": ts,
         "last_changed_at": ts if overall_changed else prev.get("last_changed_at", ts),

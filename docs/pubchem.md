@@ -85,6 +85,12 @@ Each file records workflow identity and timing, dispatch parameters, shard/CID c
 
 Unchanged runs are still written to the metrics branch, while `main` snapshot data remains commit-on-change. For reproducible paper analysis, fix and report the observation window's start and end dates before aggregating these files.
 
+## Snapshot sharding
+
+Repository snapshots use 32 deterministic shards per asset, assigned by `cid % 32`. Latest shards are ordinary JSON arrays so Pages and other static clients can read them directly. Timestamped history shards are gzip-compressed. Every asset directory contains a manifest with row counts, file sizes, SHA-256 checksums, source checksum, shard strategy, and generation time.
+
+During migration, monolithic files under `snapshots/clinical_trials/latest/*.json` remain available to the incremental collector. Pages prefers the shard manifest and exposes uncompressed shard directories. Use `scripts/snapshot_shards.py materialize` for consumers that require one JSON array.
+
 Normalized trial rows use a common schema across collections:
 - collection (human-readable source name)
 - collection_code (raw SDQ collection code)
