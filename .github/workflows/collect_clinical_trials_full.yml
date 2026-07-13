@@ -261,7 +261,7 @@ jobs:
             --shard-summary-glob "out/pubchem_trials_shards/s*/summary.json" \
             --baseline-state /tmp/baseline_collection_state.json \
             --result-state snapshots/clinical_trials/collection_state.json \
-            --latest-file snapshots/clinical_trials/latest/trials.json \
+            --latest-file snapshots/clinical_trials/latest/trials/manifest.json \
             --changed-flag /tmp/pubchem_trials_changed.txt \
             --started-at "$(cat /tmp/run_started_at.txt 2>/dev/null || true)" \
             --finished-at "${FINISHED_AT}" \

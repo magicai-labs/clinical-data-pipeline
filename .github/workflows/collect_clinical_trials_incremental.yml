@@ -72,6 +72,19 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e .
 
+      - name: Materialize incremental baseline
+        run: |
+          set -euo pipefail
+          if [ -f snapshots/clinical_trials/latest/trials/manifest.json ]; then
+            python scripts/snapshot_shards.py materialize \
+              --manifest snapshots/clinical_trials/latest/trials/manifest.json \
+              --output /tmp/pubchem_trials_baseline.json
+          elif [ -f snapshots/clinical_trials/latest/trials.json ]; then
+            cp snapshots/clinical_trials/latest/trials.json /tmp/pubchem_trials_baseline.json
+          else
+            echo "[workflow] no existing baseline; incremental run will initialize it"
+          fi
+
       - name: Build incremental delta dataset
         env:
           HNID: ${{ github.event.inputs.hnid || '1856916' }}
@@ -107,8 +120,8 @@ jobs:
             --update-fallback
 
           INC_ARGS=""
-          if [ -f snapshots/clinical_trials/latest/trials.json ]; then
-            INC_ARGS="--incremental-from snapshots/clinical_trials/latest/trials.json"
+          if [ -f /tmp/pubchem_trials_baseline.json ]; then
+            INC_ARGS="--incremental-from /tmp/pubchem_trials_baseline.json"
           fi
 
           SHARD_SIZE_INT="${SHARD_SIZE:-0}"
@@ -202,9 +215,9 @@ jobs:
       - name: Merge base and incremental delta
         run: |
           set -euo pipefail
-          if [ -f snapshots/clinical_trials/latest/trials.json ]; then
+          if [ -f /tmp/pubchem_trials_baseline.json ]; then
             python scripts/merge_trials_incremental.py \
-              --base-json snapshots/clinical_trials/latest/trials.json \
+              --base-json /tmp/pubchem_trials_baseline.json \
               --delta-json out/pubchem_trials_dataset_delta/trials.json \
               --out-dir out/pubchem_trials_dataset_gh
           else
@@ -288,7 +301,7 @@ jobs:
             --shard-summary-glob "out/pubchem_trials_shards_delta/s*/summary.json" \
             --baseline-state /tmp/baseline_collection_state.json \
             --result-state snapshots/clinical_trials/collection_state.json \
-            --latest-file snapshots/clinical_trials/latest/trials.json \
+            --latest-file snapshots/clinical_trials/latest/trials/manifest.json \
             --changed-flag /tmp/pubchem_trials_changed.txt \
             --started-at "$(cat /tmp/run_started_at.txt 2>/dev/null || true)" \
             --finished-at "${FINISHED_AT}" \

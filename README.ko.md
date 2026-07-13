@@ -304,11 +304,10 @@ PYTHONUNBUFFERED=1 conda run -n clinical-pipeline python -u scripts/collect_ctgo
 PubChem 스냅샷 저장 경로:
 
 - `snapshots/clinical_trials/latest/{trials,compounds,trials_compact}/manifest.json` 및 결정적 `shard-*.json` 32개
-- `snapshots/clinical_trials/latest/{trials,compounds,trials_compact}.json` (전환 기간 단일 파일 호환본)
 - `snapshots/clinical_trials/history/<timestamp>/<asset>/manifest.json` 및 압축된 `shard-*.json.gz` 히스토리
 - `snapshots/clinical_trials/collection_state.json` (수집/변경 메타데이터, `source: pubchem` 포함)
 
-각 행은 `cid % 32`로 배정되므로 실행이 달라져도 같은 CID는 같은 샤드에 유지됩니다. manifest에는 행 수, 파일 크기, SHA-256, 원본 체크섬이 기록됩니다. GitHub Pages는 manifest를 우선 사용하고 기존 스냅샷에는 단일 JSON fallback을 사용합니다.
+각 행은 `cid % 32`로 배정되므로 실행이 달라져도 같은 CID는 같은 샤드에 유지됩니다. manifest에는 행 수, 파일 크기, SHA-256, 원본 체크섬이 기록됩니다. 단일 최신 파일은 커밋하지 않으며 증분 작업은 runner 내부 임시 baseline을 manifest에서 복원합니다. GitHub Pages도 manifest를 사용하고 기존 스냅샷에는 fallback을 유지합니다.
 
 로컬에서 수집 후 스냅샷 갱신:
 
