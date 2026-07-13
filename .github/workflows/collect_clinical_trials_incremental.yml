@@ -219,6 +219,7 @@ jobs:
             python scripts/merge_trials_incremental.py \
               --base-json /tmp/pubchem_trials_baseline.json \
               --delta-json out/pubchem_trials_dataset_delta/trials.json \
+              --active-cids-file out/pubchem_trials_dataset_delta/cids_all.txt \
               --out-dir out/pubchem_trials_dataset_gh
           else
             mkdir -p out/pubchem_trials_dataset_gh

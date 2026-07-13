@@ -86,3 +86,44 @@ def test_merge_trials_incremental_unit(tmp_path: Path):
     # one-row-per-line representation instead of expanding every field with indent=2.
     assert len((out_dir / "trials.json").read_text(encoding="utf-8").splitlines()) == 5
     assert len((out_dir / "trials_compact.json").read_text(encoding="utf-8").splitlines()) == 5
+
+
+def test_merge_filters_placeholders_and_inactive_cids(tmp_path: Path):
+    valid = lambda cid: {
+        "cid": cid,
+        "collection": "ClinicalTrials.gov",
+        "collection_code": "clinicaltrials",
+        "id": f"NCT{cid}",
+    }
+    base_rows = [valid(1), valid(2), {"cid": 3, "error": "server busy"}]
+    delta_rows = [valid(3), {"cid": 4, "note": "no_trials_found"}]
+    base_json = tmp_path / "base.json"
+    delta_json = tmp_path / "delta.json"
+    active_cids = tmp_path / "active.txt"
+    out_dir = tmp_path / "out"
+    base_json.write_text(json.dumps(base_rows), encoding="utf-8")
+    delta_json.write_text(json.dumps(delta_rows), encoding="utf-8")
+    active_cids.write_text("1\n3\n4\n", encoding="utf-8")
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/merge_trials_incremental.py",
+            "--base-json",
+            str(base_json),
+            "--delta-json",
+            str(delta_json),
+            "--active-cids-file",
+            str(active_cids),
+            "--out-dir",
+            str(out_dir),
+        ],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stderr
+    rows = json.loads((out_dir / "trials.json").read_text(encoding="utf-8"))
+    assert {(row["cid"], row["id"]) for row in rows} == {(1, "NCT1"), (3, "NCT3")}
+    summary = json.loads((out_dir / "summary.json").read_text(encoding="utf-8"))
+    assert summary["n_filtered_nonclinical_rows"] == 2
+    assert summary["n_removed_inactive_cid_rows"] == 1

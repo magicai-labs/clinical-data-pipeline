@@ -452,31 +452,14 @@ def main() -> int:
                 collections=collections,
                 limit_per_collection=args.limit_per_collection,
             )
-        except Exception as e:
-            err_row = {
-                "cid": cid,
-                "collections": list(collections),
-                "error": f"trials_union_error:{type(e).__name__}:{e}",
-                "smiles": smiles,
-                "inchikey": inchikey,
-                "iupac_name": iupac_name,
-                "compound_error": compound_error,
-                "image_base64": image_base64,
-            }
-            selected_rows, n_new, n_changed, n_skipped = _select_incremental_rows([err_row], incremental_index)
-            if selected_rows:
-                _write_jsonl(jsonl_path, selected_rows)
-            total_rows += len(selected_rows)
+        except Exception:
             total_with_errors += 1
-            total_new_rows += n_new
-            total_changed_rows += n_changed
-            total_skipped_unchanged_rows += n_skipped
             if args.show_progress:
                 _print_progress(
                     idx=idx,
                     total=len(cids),
                     cid=cid,
-                    added_rows=len(selected_rows),
+                    added_rows=0,
                     total_rows=total_rows,
                     errored=True,
                 )
@@ -485,20 +468,17 @@ def main() -> int:
         if union_rows:
             total_with_trials += 1
         else:
-            # Keep a placeholder row for traceability
-            union_rows = [
-                {
-                    "collection": None,
-                    "id": None,
-                    "title": None,
-                    "phase": None,
-                    "status": None,
-                    "date": None,
-                    "id_url": None,
-                    "cids": None,
-                    "note": "no_trials_found",
-                }
-            ]
+            # A trials dataset must contain trial rows only. CID coverage and
+            # error counters remain available through cids.txt and summary.json.
+            if args.show_progress:
+                _print_progress(
+                    idx=idx,
+                    total=len(cids),
+                    cid=cid,
+                    added_rows=0,
+                    total_rows=total_rows,
+                )
+            continue
 
         out_rows: List[Dict[str, object]] = []
         for r in union_rows:

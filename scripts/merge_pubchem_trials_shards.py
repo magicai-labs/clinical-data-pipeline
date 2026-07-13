@@ -117,6 +117,14 @@ def aggregate_shard_summaries(shard_dirs: Sequence[Path]) -> Tuple[Dict[str, int
     return aggregate_shard_summary_files(shard_dir / "summary.json" for shard_dir in shard_dirs)
 
 
+def _is_clinical_trial_row(row: Dict[str, object]) -> bool:
+    return (
+        isinstance(row.get("cid"), int)
+        and bool(row.get("id"))
+        and bool(row.get("collection_code") or row.get("collection"))
+    )
+
+
 def main() -> int:
     p = argparse.ArgumentParser(prog="merge-pubchem-trials-shards")
     p.add_argument("--shard-dirs", required=True, help="Comma-separated shard output directories")
@@ -134,9 +142,13 @@ def main() -> int:
     seen_signatures: Set[str] = set()
 
     input_rows = 0
+    filtered_nonclinical_rows = 0
     for shard in shard_dirs:
         for row in _iter_rows_from_shard(shard):
             input_rows += 1
+            if not _is_clinical_trial_row(row):
+                filtered_nonclinical_rows += 1
+                continue
             sig = _row_signature(row)
             if sig in seen_signatures:
                 continue
@@ -194,6 +206,7 @@ def main() -> int:
         "shard_dirs": [str(p) for p in shard_dirs],
         **aggregate,
         "n_input_rows": input_rows,
+        "n_filtered_nonclinical_rows": filtered_nonclinical_rows,
         "n_rows": len(merged_rows),
         "n_cids": len(cids),
         "n_compounds": len(compounds_rows),

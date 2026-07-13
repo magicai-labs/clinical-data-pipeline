@@ -91,6 +91,8 @@ Repository snapshots use 32 deterministic shards per asset, assigned by `cid % 3
 
 Monolithic files under `snapshots/clinical_trials/latest/*.json` are not committed. The incremental workflow materializes a runner-local baseline from the manifest, and Pages exposes the uncompressed shard directories. Use `scripts/snapshot_shards.py materialize` for consumers that require one JSON array.
 
+Trial snapshots contain only valid clinical rows with `cid`, `id`, and a collection identifier. No-result and request-error placeholders are excluded from trial JSON and the Pages table while their counts remain in collection summaries and run metrics. When the current HNID CID universe is fetched successfully, incremental merging prunes valid legacy rows for CIDs no longer in that universe.
+
 Normalized trial rows use a common schema across collections:
 - collection (human-readable source name)
 - collection_code (raw SDQ collection code)
