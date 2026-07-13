@@ -106,6 +106,18 @@ def test_checksums_and_unchanged_run_are_recorded(tmp_path: Path):
     assert metrics["latest_file_bytes"] == 3
 
 
+def test_manifest_reports_total_uncompressed_shard_bytes(tmp_path: Path):
+    manifest = tmp_path / "trials" / "manifest.json"
+    manifest.parent.mkdir()
+    manifest.write_text(
+        json.dumps({"shards": [{"path": "shard-000.json", "bytes": 11}, {"path": "shard-001.json", "bytes": 17}]}),
+        encoding="utf-8",
+    )
+    result, metrics = _run(tmp_path, "--latest-file", str(manifest))
+    assert result.returncode == 0, result.stderr
+    assert metrics["latest_file_bytes"] == 28
+
+
 def test_failure_with_missing_inputs_still_writes_metrics(tmp_path: Path):
     output = tmp_path / "failed.json"
     result = subprocess.run(

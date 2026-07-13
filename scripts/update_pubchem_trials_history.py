@@ -163,6 +163,7 @@ def main() -> int:
         prefix = str(asset["prefix"])
         assert isinstance(src, Path)
         assert isinstance(latest, Path)
+        latest_shard_dir = latest.parent / name
 
         checksum = _checksum(src)
         rows = _json_row_count(src)
@@ -174,16 +175,17 @@ def main() -> int:
         if name == "trials" and prev_checksum is None:
             prev_checksum = prev.get("latest_checksum")
 
-        changed = (not latest.exists()) or checksum != prev_checksum
+        changed = checksum != prev_checksum or not (latest_shard_dir / "manifest.json").exists()
         if changed:
             changed_assets.append(name)
 
         latest.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(src, latest)
-        latest_shard_dir = latest.parent / name
         latest_manifest = write_shards(
             src, latest_shard_dir, asset=name, generated_at=ts, shard_count=args.shard_count
         )
+        # Monolithic latest files eventually exceed GitHub's 100 MiB per-file
+        # limit. The manifest and deterministic shards are the canonical copy.
+        latest.unlink(missing_ok=True)
 
         if (not args.snapshot_on_change) or changed:
             history_dir.mkdir(parents=True, exist_ok=True)
@@ -197,7 +199,7 @@ def main() -> int:
             snapshot_paths[name] = snapshot_path
 
         state_assets[name] = {
-            "latest_file": str(latest),
+            "latest_file": str(latest_shard_dir / "manifest.json"),
             "latest_checksum": checksum,
             "latest_row_count": rows,
             "latest_manifest": str(latest_shard_dir / "manifest.json"),
@@ -226,7 +228,11 @@ def main() -> int:
             history_counts[str(asset["name"])] = 0
 
     trials_state = state_assets.get("trials", {})
-    latest_file = str(trials_state.get("latest_file", args.latest_file))
+    latest_file = str(
+        trials_state.get(
+            "latest_file", Path(args.latest_file).parent / "trials" / "manifest.json"
+        )
+    )
     latest_checksum = str(trials_state.get("latest_checksum", ""))
     latest_row_count = int(trials_state.get("latest_row_count", 0))
     latest_snapshot = str(trials_state.get("latest_snapshot", prev.get("latest_snapshot", "")))

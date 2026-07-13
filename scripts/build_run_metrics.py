@@ -92,7 +92,17 @@ def build_metrics(args: argparse.Namespace) -> dict[str, Any]:
 
     latest_bytes: int | None = None
     if args.latest_file and args.latest_file.exists():
-        latest_bytes = args.latest_file.stat().st_size
+        if args.latest_file.name == "manifest.json":
+            manifest = _read_json(args.latest_file, "latest manifest", warnings)
+            shards = manifest.get("shards", [])
+            if isinstance(shards, list) and all(
+                isinstance(item, dict) and isinstance(item.get("bytes"), int) for item in shards
+            ):
+                latest_bytes = sum(item["bytes"] for item in shards)
+            else:
+                warnings.append(f"invalid shard byte metadata: {args.latest_file}")
+        else:
+            latest_bytes = args.latest_file.stat().st_size
     else:
         warnings.append(f"missing latest trials file: {args.latest_file or 'not specified'}")
 

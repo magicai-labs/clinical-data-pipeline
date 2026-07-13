@@ -47,7 +47,8 @@ def test_update_pubchem_trials_history_unit(tmp_path: Path):
     )
     assert r1.returncode == 0, r1.stderr
     assert "changed: true" in r1.stdout
-    assert latest.exists()
+    assert not latest.exists()
+    assert (latest.parent / "trials" / "manifest.json").exists()
     assert _history_count(history, "trials") == 1
     assert flag.read_text(encoding="utf-8").strip() == "true"
 
@@ -75,6 +76,7 @@ def test_update_pubchem_trials_history_unit(tmp_path: Path):
     state_obj = json.loads(state.read_text(encoding="utf-8"))
     assert state_obj["source"] == "pubchem"
     assert state_obj["latest_row_count"] == 1
+    assert state_obj["latest_file"].endswith("/latest/trials/manifest.json")
     assert state_obj["history_count"] == 2
 
 
@@ -231,9 +233,12 @@ def test_update_pubchem_trials_history_with_aux_assets_unit(tmp_path: Path):
     assert r1.returncode == 0, r1.stderr
     assert "changed: true" in r1.stdout
     assert flag.read_text(encoding="utf-8").strip() == "true"
-    assert latest_trials.exists()
-    assert latest_compounds.exists()
-    assert latest_compact.exists()
+    assert not latest_trials.exists()
+    assert not latest_compounds.exists()
+    assert not latest_compact.exists()
+    assert (latest_trials.parent / "trials" / "manifest.json").exists()
+    assert (latest_trials.parent / "compounds" / "manifest.json").exists()
+    assert (latest_trials.parent / "trials_compact" / "manifest.json").exists()
     assert _history_count(history, "trials") == 1
     assert _history_count(history, "compounds") == 1
     assert _history_count(history, "trials_compact") == 1

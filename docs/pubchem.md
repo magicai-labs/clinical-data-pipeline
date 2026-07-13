@@ -89,7 +89,7 @@ Unchanged runs are still written to the metrics branch, while `main` snapshot da
 
 Repository snapshots use 32 deterministic shards per asset, assigned by `cid % 32`. Latest shards are ordinary JSON arrays so Pages and other static clients can read them directly. Timestamped history shards are gzip-compressed. Every asset directory contains a manifest with row counts, file sizes, SHA-256 checksums, source checksum, shard strategy, and generation time.
 
-During migration, monolithic files under `snapshots/clinical_trials/latest/*.json` remain available to the incremental collector. Pages prefers the shard manifest and exposes uncompressed shard directories. Use `scripts/snapshot_shards.py materialize` for consumers that require one JSON array.
+Monolithic files under `snapshots/clinical_trials/latest/*.json` are not committed. The incremental workflow materializes a runner-local baseline from the manifest, and Pages exposes the uncompressed shard directories. Use `scripts/snapshot_shards.py materialize` for consumers that require one JSON array.
 
 Normalized trial rows use a common schema across collections:
 - collection (human-readable source name)

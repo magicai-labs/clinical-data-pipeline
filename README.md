@@ -442,11 +442,10 @@ Recommended workflow presets:
 PubChem workflow snapshot outputs:
 
 - `snapshots/clinical_trials/latest/{trials,compounds,trials_compact}/manifest.json` and 32 deterministic `shard-*.json` files
-- `snapshots/clinical_trials/latest/{trials,compounds,trials_compact}.json` (temporary monolithic compatibility files)
 - `snapshots/clinical_trials/history/<timestamp>/<asset>/manifest.json` and compressed `shard-*.json.gz` history
 - `snapshots/clinical_trials/collection_state.json` (last collected/changed metadata, includes `source: pubchem`)
 
-Rows are assigned by `cid % 32`, so a CID remains in the same shard across runs. Each manifest records row counts, byte sizes, SHA-256 checksums, and the source checksum. GitHub Pages materializes its table from the latest manifest when available and falls back to the compatibility JSON for older snapshots.
+Rows are assigned by `cid % 32`, so a CID remains in the same shard across runs. Each manifest records row counts, byte sizes, SHA-256 checksums, and the source checksum. Monolithic latest files are not committed; incremental jobs materialize a temporary runner-local baseline from the manifest. GitHub Pages materializes its table from the latest manifest and retains a fallback for older snapshots.
 
 Local snapshot update after collecting dataset files:
 
