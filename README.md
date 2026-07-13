@@ -447,6 +447,8 @@ PubChem workflow snapshot outputs:
 
 Rows are assigned by `cid % 32`, so a CID remains in the same shard across runs. Each manifest records row counts, byte sizes, SHA-256 checksums, and the source checksum. Monolithic latest files are not committed; incremental jobs materialize a temporary runner-local baseline from the manifest. GitHub Pages materializes its table from the latest manifest and retains a fallback for older snapshots.
 
+`trials` contains only rows with a CID, trial ID, and collection. Empty results and collection errors are counted in run summaries but are not emitted as blank trial rows. Incremental merging also removes trial rows whose CID is no longer present in a successfully fetched current HNID CID universe.
+
 Local snapshot update after collecting dataset files:
 
 ```bash

@@ -28,7 +28,12 @@ def test_merge_pubchem_trials_shards_unit(tmp_path: Path):
     }
 
     (shard1 / "trials.jsonl").write_text(
-        json.dumps(row_a, ensure_ascii=False) + "\n" + json.dumps(row_b, ensure_ascii=False) + "\n",
+        json.dumps(row_a, ensure_ascii=False)
+        + "\n"
+        + json.dumps(row_b, ensure_ascii=False)
+        + "\n"
+        + json.dumps({"cid": 13, "error": "server busy"})
+        + "\n",
         encoding="utf-8",
     )
     # Duplicate row_b across shards to validate dedupe.
@@ -87,7 +92,8 @@ def test_merge_pubchem_trials_shards_unit(tmp_path: Path):
 
     summary = json.loads((out_dir / "summary.json").read_text(encoding="utf-8"))
     assert summary["n_shards"] == 2
-    assert summary["n_input_rows"] == 3
+    assert summary["n_input_rows"] == 4
+    assert summary["n_filtered_nonclinical_rows"] == 1
     assert summary["n_rows"] == 2
     assert summary["n_cids"] == 2
     assert summary["n_compounds"] == 2

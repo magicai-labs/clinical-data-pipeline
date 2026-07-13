@@ -39,6 +39,24 @@ def _row_key(row: Dict[str, object]) -> str:
     return f"{cid}|{collection_code}|{trial_id}"
 
 
+def _is_clinical_trial_row(row: Dict[str, object]) -> bool:
+    return (
+        isinstance(row.get("cid"), int)
+        and bool(row.get("id"))
+        and bool(row.get("collection_code") or row.get("collection"))
+    )
+
+
+def _load_active_cids(path: Path | None) -> Set[int] | None:
+    if path is None:
+        return None
+    return {
+        int(line.strip())
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.strip().isdigit()
+    }
+
+
 def _build_header(rows: Iterable[Dict[str, object]], base_first: Sequence[str]) -> List[str]:
     keys: Set[str] = set()
     for row in rows:
@@ -97,10 +115,34 @@ def main() -> int:
     p.add_argument("--base-json", required=True, help="Existing full trials.json")
     p.add_argument("--delta-json", required=True, help="New incremental trials.json")
     p.add_argument("--out-dir", required=True, help="Output dataset directory")
+    p.add_argument(
+        "--active-cids-file",
+        default=None,
+        help="Optional successful current CID universe; rows outside it are removed",
+    )
     args = p.parse_args()
 
     base_rows = _load_rows(Path(args.base_json))
     delta_rows = _load_rows(Path(args.delta_json))
+    active_cids = _load_active_cids(Path(args.active_cids_file) if args.active_cids_file else None)
+
+    filtered_nonclinical_rows = sum(
+        1 for row in [*base_rows, *delta_rows] if not _is_clinical_trial_row(row)
+    )
+    inactive_cid_rows = sum(
+        1
+        for row in base_rows
+        if _is_clinical_trial_row(row)
+        and active_cids is not None
+        and row.get("cid") not in active_cids
+    )
+    base_rows = [
+        row
+        for row in base_rows
+        if _is_clinical_trial_row(row)
+        and (active_cids is None or row.get("cid") in active_cids)
+    ]
+    delta_rows = [row for row in delta_rows if _is_clinical_trial_row(row)]
 
     merged_map: Dict[str, Dict[str, object]] = {}
     for row in base_rows:
@@ -178,6 +220,8 @@ def main() -> int:
         "delta_json": args.delta_json,
         "n_base_rows": len(base_rows),
         "n_delta_rows": len(delta_rows),
+        "n_filtered_nonclinical_rows": filtered_nonclinical_rows,
+        "n_removed_inactive_cid_rows": inactive_cid_rows,
         "n_rows": len(merged_rows),
         "n_cids": len(cids),
         "n_compounds": len(compounds_rows),

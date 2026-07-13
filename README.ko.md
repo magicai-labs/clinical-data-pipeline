@@ -309,6 +309,8 @@ PubChem 스냅샷 저장 경로:
 
 각 행은 `cid % 32`로 배정되므로 실행이 달라져도 같은 CID는 같은 샤드에 유지됩니다. manifest에는 행 수, 파일 크기, SHA-256, 원본 체크섬이 기록됩니다. 단일 최신 파일은 커밋하지 않으며 증분 작업은 runner 내부 임시 baseline을 manifest에서 복원합니다. GitHub Pages도 manifest를 사용하고 기존 스냅샷에는 fallback을 유지합니다.
 
+`trials`에는 CID, 임상시험 ID, collection이 모두 있는 정상 임상시험 행만 저장합니다. 빈 결과와 수집 오류는 실행 summary에서 집계하지만 빈 임상시험 행으로 출력하지 않습니다. 증분 병합은 PubChem HNID CID 목록을 정상적으로 받은 경우 현재 목록에서 제외된 CID의 과거 trial 행도 제거합니다.
+
 로컬에서 수집 후 스냅샷 갱신:
 
 ```bash

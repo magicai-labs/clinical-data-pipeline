@@ -80,6 +80,17 @@ jobs:
           rows = json.loads(trials_path.read_text(encoding="utf-8"))
           if not isinstance(rows, list):
               rows = [rows]
+          rows = [
+              row for row in rows
+              if isinstance(row, dict)
+              and isinstance(row.get("cid"), int)
+              and row.get("id")
+              and (row.get("collection_code") or row.get("collection"))
+          ]
+          trials_path.write_text(
+              json.dumps(rows, ensure_ascii=False, separators=(",", ":")) + "\n",
+              encoding="utf-8",
+          )
 
           keys = set()
           cids = set()

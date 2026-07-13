@@ -210,6 +210,51 @@ def test_export_pubchem_trials_dataset_uses_cids_file_unit(tmp_path: Path):
     assert summary["n_rows"] == 2
 
 
+def test_export_omits_no_trial_and_error_placeholders(tmp_path: Path):
+    stub_dir = tmp_path / "stubs"
+    pkg = stub_dir / "clinical_data_analyzer"
+    pubchem_pkg = pkg / "pubchem"
+    pubchem_pkg.mkdir(parents=True)
+    (pkg / "__init__.py").write_text("", encoding="utf-8")
+    (pubchem_pkg / "__init__.py").write_text(
+        "class PubChemClassificationClient:\n"
+        "    def get_cids(self, hnid, fmt='TXT'):\n"
+        "        return [101, 102]\n\n"
+        "class PubChemClient:\n"
+        "    def compound_properties(self, cid):\n"
+        "        return {'CanonicalSMILES':'C'}\n\n"
+        "class PubChemWebFallbackClient:\n"
+        "    def get_normalized_trials_union(self, cid, collections=('clinicaltrials',), limit_per_collection=200):\n"
+        "        if cid == 102:\n"
+        "            raise RuntimeError('server busy')\n"
+        "        return [], []\n",
+        encoding="utf-8",
+    )
+    out_dir = tmp_path / "out"
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/export_pubchem_trials_dataset.py",
+            "--hnid",
+            "1856916",
+            "--out-dir",
+            str(out_dir),
+            "--skip-images",
+        ],
+        capture_output=True,
+        text=True,
+        env={"PYTHONPATH": str(stub_dir)},
+    )
+    assert result.returncode == 0, result.stderr
+    assert json.loads((out_dir / "trials.json").read_text(encoding="utf-8")) == []
+    assert json.loads((out_dir / "trials_compact.json").read_text(encoding="utf-8")) == []
+    assert (out_dir / "cids.txt").read_text(encoding="utf-8").splitlines() == ["101", "102"]
+    summary = json.loads((out_dir / "summary.json").read_text(encoding="utf-8"))
+    assert summary["n_rows"] == 0
+    assert summary["n_cids_with_trials"] == 0
+    assert summary["n_error_rows"] == 1
+
+
 def test_export_pubchem_trials_dataset_incremental_skip_unit(tmp_path: Path):
     stub_dir = tmp_path / "stubs"
     stub_dir.mkdir()
