@@ -441,13 +441,12 @@ Recommended workflow presets:
 
 PubChem workflow snapshot outputs:
 
-- `snapshots/clinical_trials/latest/trials.json` (latest)
-- `snapshots/clinical_trials/latest/compounds.json` (CID-level compound cache)
-- `snapshots/clinical_trials/latest/trials_compact.json` (trial-only compact rows)
-- `snapshots/clinical_trials/history/trials_*.json` (timestamped history)
-- `snapshots/clinical_trials/history/compounds_*.json` (timestamped compound history)
-- `snapshots/clinical_trials/history/trials_compact_*.json` (timestamped compact history)
+- `snapshots/clinical_trials/latest/{trials,compounds,trials_compact}/manifest.json` and 32 deterministic `shard-*.json` files
+- `snapshots/clinical_trials/latest/{trials,compounds,trials_compact}.json` (temporary monolithic compatibility files)
+- `snapshots/clinical_trials/history/<timestamp>/<asset>/manifest.json` and compressed `shard-*.json.gz` history
 - `snapshots/clinical_trials/collection_state.json` (last collected/changed metadata, includes `source: pubchem`)
+
+Rows are assigned by `cid % 32`, so a CID remains in the same shard across runs. Each manifest records row counts, byte sizes, SHA-256 checksums, and the source checksum. GitHub Pages materializes its table from the latest manifest when available and falls back to the compatibility JSON for older snapshots.
 
 Local snapshot update after collecting dataset files:
 
@@ -461,7 +460,16 @@ python scripts/update_pubchem_trials_history.py \
   --latest-compounds-file snapshots/clinical_trials/latest/compounds.json \
   --latest-trials-compact-file snapshots/clinical_trials/latest/trials_compact.json \
   --history-dir snapshots/clinical_trials/history \
+  --shard-count 32 \
   --retention-days 365
+```
+
+Materialize a sharded snapshot when a single JSON array is needed:
+
+```bash
+python scripts/snapshot_shards.py materialize \
+  --manifest snapshots/clinical_trials/latest/trials/manifest.json \
+  --output out/trials.json
 ```
 
 Shard collection and merge (recommended for large runs):
@@ -516,9 +524,9 @@ The repository also includes a dedicated Pages workflow for the latest PubChem c
 
 What it does on each run:
 
-1. read the latest snapshot files from `snapshots/clinical_trials/latest/`
+1. read and materialize the latest shard manifest (with monolithic fallback)
 2. build static HTML table (`scripts/build_pubchem_trials_table.py`)
-3. publish `index.html`, `trials.json`, `trials.csv`, `summary.json`, `cids.txt` to GitHub Pages
+3. publish the table assets plus the uncompressed latest shard directories to GitHub Pages
 
 Manual run (Actions UI) input:
 
