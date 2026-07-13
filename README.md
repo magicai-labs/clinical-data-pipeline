@@ -3,6 +3,7 @@
 [![PyPI version](https://img.shields.io/pypi/v/clinpipe.svg)](https://pypi.org/project/clinpipe/)
 [![Python versions](https://img.shields.io/pypi/pyversions/clinpipe.svg)](https://pypi.org/project/clinpipe/)
 [![Package CI](https://github.com/magicai-labs/clinical-data-pipeline/actions/workflows/package_ci.yml/badge.svg)](https://github.com/magicai-labs/clinical-data-pipeline/actions/workflows/package_ci.yml)
+[![Live clinical trials table](https://img.shields.io/badge/GitHub%20Pages-Live%20Table-2ea44f)](https://magicai-labs.github.io/clinical-data-pipeline/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/magicai-labs/clinical-data-pipeline/blob/main/LICENSE)
 
 A research-grade pipeline for collecting, normalizing, and linking
@@ -11,6 +12,7 @@ A research-grade pipeline for collecting, normalizing, and linking
 [Korean README](https://github.com/magicai-labs/clinical-data-pipeline/blob/main/README.ko.md)
 
 - [GitHub repository](https://github.com/magicai-labs/clinical-data-pipeline)
+- [Live clinical trials table (GitHub Pages)](https://magicai-labs.github.io/clinical-data-pipeline/)
 - [Documentation](https://github.com/magicai-labs/clinical-data-pipeline/tree/main/docs)
 - [Issue tracker](https://github.com/magicai-labs/clinical-data-pipeline/issues)
 
@@ -521,6 +523,7 @@ python -m pip install \
 
 The repository also includes a dedicated Pages workflow for the latest PubChem clinical trial snapshot:
 
+- **Live table:** [magicai-labs.github.io/clinical-data-pipeline](https://magicai-labs.github.io/clinical-data-pipeline/)
 - `.github/workflows/clinical_compound_table_pages.yml`
 
 What it does on each run:

@@ -4,6 +4,10 @@ PubChem의 임상 관련 화합물 데이터와 ClinicalTrials.gov 임상시험 
 
 English README: README.md
 
+- [실시간 임상시험 테이블 (GitHub Pages)](https://magicai-labs.github.io/clinical-data-pipeline/)
+- [GitHub 저장소](https://github.com/magicai-labs/clinical-data-pipeline)
+- [문서](https://github.com/magicai-labs/clinical-data-pipeline/tree/main/docs)
+
 이 저장소는 **재현 가능한 API 기반 수집**에 집중합니다.
 특정 화합물에서 PubChem REST 응답에 trial ID가 비어 있는 경우에만
 웹 기반 fallback을 사용합니다.
