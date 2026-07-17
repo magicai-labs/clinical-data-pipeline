@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "asset": "compounds",
-  "generated_at": "2026-07-16T08:29:48Z",
+  "generated_at": "2026-07-17T07:10:11Z",
   "format": "json-array",
   "compression": null,
   "shard_strategy": "cid_modulo",
   "shard_count": 32,
-  "row_count": 4234,
-  "source_sha256": "6a08b4f1fedbe8108049d633c46770e82b5fcb2c63745cdc7a103987a7d13a63",
+  "row_count": 4233,
+  "source_sha256": "8d197c389d2db0dfaf9e45a1525caca1bcf662aa5eefc4c2be05995d36ffb0ac",
   "shards": [
     {
       "index": 0,
@@ -159,9 +159,9 @@
     {
       "index": 21,
       "path": "shard-021.json",
-      "rows": 151,
-      "bytes": 40538,
-      "sha256": "3aae883e4ffb99dbf90313a193efb4067bf4e568b6f554844627c1388cbab08d"
+      "rows": 150,
+      "bytes": 40356,
+      "sha256": "00b408af0f3b811bc630eb24777eb0dbab21df44dcb43f5d7e98cc3a807d4517"
     },
     {
       "index": 22,
