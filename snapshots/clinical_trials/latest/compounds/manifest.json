@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "asset": "compounds",
-  "generated_at": "2026-07-31T11:21:18Z",
+  "generated_at": "2026-08-01T11:13:30Z",
   "format": "json-array",
   "compression": null,
   "shard_strategy": "cid_modulo",
