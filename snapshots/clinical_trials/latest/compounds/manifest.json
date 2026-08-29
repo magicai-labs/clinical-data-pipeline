@@ -1,20 +1,20 @@
 {
   "schema_version": 1,
   "asset": "compounds",
-  "generated_at": "2026-08-28T17:57:28Z",
+  "generated_at": "2026-08-29T13:48:56Z",
   "format": "json-array",
   "compression": null,
   "shard_strategy": "cid_modulo",
   "shard_count": 32,
   "row_count": 11998,
-  "source_sha256": "1a9e19b1b185bda1a1f2c44b652162ee18a8f566b23edcb1374638195e996600",
+  "source_sha256": "ff47ca5aed66250ee9919693f37da77b9fd2a10036a11b1b278a2fe4f490b2e9",
   "shards": [
     {
       "index": 0,
       "path": "shard-000.json",
       "rows": 383,
-      "bytes": 130388,
-      "sha256": "8f27f891df449b152bd3c96cbe99c2e1eb6901fd73355810a651e842433d72ce"
+      "bytes": 132442,
+      "sha256": "88e0bb2b77da5fdb787352e606824f04f1ecba51713b6218e6c99f52325ce2f7"
     },
     {
       "index": 1,
@@ -41,8 +41,8 @@
       "index": 4,
       "path": "shard-004.json",
       "rows": 373,
-      "bytes": 135078,
-      "sha256": "91722fe5b1b2464fae6a6611cc33dd7d3cd3a178d8458a3c7b48a81f3d807b8a"
+      "bytes": 134965,
+      "sha256": "38b18bb18f8302214972e9bca844d40e90dfb892b0ef4323f9ea37330bec8715"
     },
     {
       "index": 5,
@@ -55,15 +55,15 @@
       "index": 6,
       "path": "shard-006.json",
       "rows": 383,
-      "bytes": 132128,
-      "sha256": "b297f1a9cdf591891dcfdd55ca7889e0e1ca210afdc74735b5096e9e63521ab5"
+      "bytes": 132011,
+      "sha256": "c76f96b4dcade12fef1dcaa4764ec2f805c15497171388b89c5e0f0799871183"
     },
     {
       "index": 7,
       "path": "shard-007.json",
       "rows": 356,
-      "bytes": 123188,
-      "sha256": "11b8715cad68042c6653e56f71ac85598523866edf7fb8940345c63b57307f7f"
+      "bytes": 123297,
+      "sha256": "e9ce15d0ad30d2972f77a879806fae5c1096dff130ce9c723d22945cea17b681"
     },
     {
       "index": 8,
@@ -118,15 +118,15 @@
       "index": 15,
       "path": "shard-015.json",
       "rows": 377,
-      "bytes": 127275,
-      "sha256": "55e07eea7d5f6a28aaad4b01c48b7524cdc5fc6d91a431e65f4db98cde1847ee"
+      "bytes": 127802,
+      "sha256": "ace03c6047cc95d85113fd9345306172aaff56b4ea2d3f6e8be83f8ceb595ee2"
     },
     {
       "index": 16,
       "path": "shard-016.json",
       "rows": 377,
-      "bytes": 131702,
-      "sha256": "cbc89552790effef71fcebf9242612af9161ec5c16017d4c740a316b1805c0d7"
+      "bytes": 131525,
+      "sha256": "a21ba96882ab8032865dc056a6b58671d1da07443a8f353c56110ac8fc6a3b6a"
     },
     {
       "index": 17,
