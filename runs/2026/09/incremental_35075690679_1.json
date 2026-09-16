@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "repository": "magicai-labs/clinical-data-pipeline",
+  "workflow_name": "collect-clinical-trials-incremental",
+  "mode": "incremental",
+  "event_name": "schedule",
+  "run_id": "35075690679",
+  "run_attempt": "1",
+  "run_url": "https://github.com/magicai-labs/clinical-data-pipeline/actions/runs/35075690679",
+  "ref_name": "main",
+  "code_sha": "6b5acd73da10e0b8ef3ee4614fc06bf7986bb974",
+  "started_at": "2026-09-16T08:48:45Z",
+  "finished_at": "2026-09-16T14:48:27Z",
+  "elapsed_sec": 21582.0,
+  "workflow_conclusion": "cancelled",
+  "parameters": {
+    "hnid": "1856916",
+    "extra_hnids": "",
+    "limit_cids": "",
+    "limit_per_collection": "1000",
+    "shard_size": "500",
+    "skip_images": "true",
+    "retention_days": "180"
+  },
+  "n_shards": 20,
+  "n_cids_total": 11960,
+  "n_cids_processed": 10000,
+  "n_rows_scanned": 220039,
+  "n_delta_rows": 201,
+  "n_new_rows": 0,
+  "n_changed_rows": 201,
+  "n_skipped_unchanged_rows": 219838,
+  "n_error_rows": 2120,
+  "baseline_checksum": "6422cff096bcae1c9595799bd3018fb7388b8e0b4f532216eea99c71c3907e87",
+  "result_checksum": "6422cff096bcae1c9595799bd3018fb7388b8e0b4f532216eea99c71c3907e87",
+  "latest_row_count": 271152,
+  "latest_file_bytes": 253706644,
+  "dataset_changed": null,
+  "history_created": false,
+  "history_count": 92,
+  "pruned_snapshot_count": 0,
+  "changed_assets": [
+    "trials",
+    "compounds"
+  ],
+  "warnings": [
+    "missing summary: out/pubchem_trials_dataset_delta/summary.json",
+    "final summary unavailable; aggregated 20 completed shard summary file(s); metrics may represent a partial run",
+    "missing changed flag: /tmp/pubchem_trials_changed.txt"
+  ]
+}
