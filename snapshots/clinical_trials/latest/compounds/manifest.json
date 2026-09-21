@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "asset": "compounds",
-  "generated_at": "2026-09-20T12:49:04Z",
+  "generated_at": "2026-09-21T10:25:20Z",
   "format": "json-array",
   "compression": null,
   "shard_strategy": "cid_modulo",
   "shard_count": 32,
   "row_count": 11960,
-  "source_sha256": "139977baa50859ef393748b5126badfae6e78a11d2d5afda46968cba72d41d59",
+  "source_sha256": "da504baae09e697eb1d0047503e3c3ec2525958ea57b05c45ddeafcd6cc6bab6",
   "shards": [
     {
       "index": 0,
@@ -83,22 +83,22 @@
       "index": 10,
       "path": "shard-010.json",
       "rows": 373,
-      "bytes": 114852,
-      "sha256": "7f03aa9fb578b6010a693b6a9f752e1e117662b0b71cdd7aab0336e86c8a7bb6"
+      "bytes": 114620,
+      "sha256": "58487ee4375e2715ab298faea828c90ae13e5ad83b14967910156b459510cde6"
     },
     {
       "index": 11,
       "path": "shard-011.json",
       "rows": 371,
-      "bytes": 133931,
-      "sha256": "1d1ad51c7553b2302e8953f5dc73fd3e54433d6469c7c9e46bd1ece157b23624"
+      "bytes": 133727,
+      "sha256": "d2e65ce5cbcb71c5dd023e0a2ba3ca86a174b18677d82cc4528ed07e67569801"
     },
     {
       "index": 12,
       "path": "shard-012.json",
       "rows": 380,
-      "bytes": 125695,
-      "sha256": "aff1d20e7da69820d081775c6409595d03a64cfc84d3f77882533e99cf14d38c"
+      "bytes": 125714,
+      "sha256": "b429d831c2b84dce41e77f2b7d354c12fd601ddcf440190c1d0bc4fd31a8d965"
     },
     {
       "index": 13,
@@ -146,15 +146,15 @@
       "index": 19,
       "path": "shard-019.json",
       "rows": 379,
-      "bytes": 132848,
-      "sha256": "1a46ad40db716315729fd070d36a8e540fcbe7eb091ac386c7ffc66f0079d28d"
+      "bytes": 133018,
+      "sha256": "1b789c577fc41bc50e36bc17d3d7743bd5729272af5d280c2af7f259f6c1b07e"
     },
     {
       "index": 20,
       "path": "shard-020.json",
       "rows": 361,
-      "bytes": 127879,
-      "sha256": "d2249409e71335f8f0d5dcead51ed48299f24d8ec35d02ec5584e6de29be2a56"
+      "bytes": 128079,
+      "sha256": "883e096723142921b26bf3ad1e9faa8a0b8b2bac2177ddb19ab0c3e84f89bd32"
     },
     {
       "index": 21,

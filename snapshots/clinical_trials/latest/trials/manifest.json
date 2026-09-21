@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "asset": "trials",
-  "generated_at": "2026-09-20T12:49:04Z",
+  "generated_at": "2026-09-21T10:25:20Z",
   "format": "json-array",
   "compression": null,
   "shard_strategy": "cid_modulo",
   "shard_count": 32,
   "row_count": 271153,
-  "source_sha256": "04afeca9b2bc66dca04a2670c07c10dfb74fd41747c12b14243c19941e8b9a19",
+  "source_sha256": "8485b7263b0e87e68d3a6ae6fccccbf94606b8325e3beb550e9832b6af5c793c",
   "shards": [
     {
       "index": 0,
@@ -83,22 +83,22 @@
       "index": 10,
       "path": "shard-010.json",
       "rows": 9298,
-      "bytes": 8051077,
-      "sha256": "1ee6615793b6280b9c2b9c195af4356f7021b70992bb81338ec615f8c3b760db"
+      "bytes": 8050613,
+      "sha256": "ff6d598b3061a693f2cd44c0105cf032c42978c6760f46053f8e1c47be567f5e"
     },
     {
       "index": 11,
       "path": "shard-011.json",
       "rows": 8119,
-      "bytes": 8083041,
-      "sha256": "bb9783c908ebc667645a9e49df28c2e95642245b2a6553cf77ab94a22160872d"
+      "bytes": 8082021,
+      "sha256": "d8bc8ec015c53cbc5a995608826a6868262ae1ab54cf1f50ddc68c32e1de2ed4"
     },
     {
       "index": 12,
       "path": "shard-012.json",
       "rows": 7661,
-      "bytes": 7633175,
-      "sha256": "02ee5b6421afb177f8e7bade9ef946bd49e52b5fd703c4a190321d853ff7fd7a"
+      "bytes": 7634220,
+      "sha256": "c3ec5bcd5d1c7c9d9029419859ad4f8ba2c84454e4cbe7533a0f34f493d308e4"
     },
     {
       "index": 13,
@@ -146,15 +146,15 @@
       "index": 19,
       "path": "shard-019.json",
       "rows": 7520,
-      "bytes": 6608287,
-      "sha256": "52b6bc196b69fbeb07cd779214e6c4b0d4f4430e02e16e985fd0f17038bcc510"
+      "bytes": 6608627,
+      "sha256": "f1561fd51b516e5c9e62098739269cd4b6fe4462bf3c0e9b6a795eb645836adc"
     },
     {
       "index": 20,
       "path": "shard-020.json",
       "rows": 5418,
-      "bytes": 5036951,
-      "sha256": "424bb34c46967ca0e0dac4a20e5ed9b0f666d41ca912dbe011b3b9d7f0425dc0"
+      "bytes": 5037351,
+      "sha256": "05407f9fff3fb03249b5ea336a78300e9161892b0dc7fb2d702d853b79add910"
     },
     {
       "index": 21,
