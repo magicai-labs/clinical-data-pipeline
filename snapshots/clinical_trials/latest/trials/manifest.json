@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "asset": "trials",
-  "generated_at": "2026-10-18T12:26:48Z",
+  "generated_at": "2026-10-20T11:53:40Z",
   "format": "json-array",
   "compression": null,
   "shard_strategy": "cid_modulo",
   "shard_count": 32,
   "row_count": 273148,
-  "source_sha256": "e23fc38ae0a737ae40c575736b43202890b9a718e893496e20d21213ddc40fb2",
+  "source_sha256": "a0fa3afcb3f3d9bd28582980dd4a348738aa09a030e23ed89f2e198ec62c851c",
   "shards": [
     {
       "index": 0,
@@ -62,8 +62,8 @@
       "index": 7,
       "path": "shard-007.json",
       "rows": 6569,
-      "bytes": 5907190,
-      "sha256": "c054d048df910f7cfbba4ce2e147c64e542b0016d4a9e9c86458cbcf04aa87a0"
+      "bytes": 5897840,
+      "sha256": "a11ed8abadc20a39baa024cfdca5cbfeaaf73c6e7e22821594fc30f48e69ce2e"
     },
     {
       "index": 8,
