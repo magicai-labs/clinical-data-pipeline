@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "asset": "trials",
-  "generated_at": "2026-10-28T13:21:19Z",
+  "generated_at": "2026-10-29T13:06:41Z",
   "format": "json-array",
   "compression": null,
   "shard_strategy": "cid_modulo",
   "shard_count": 32,
   "row_count": 274674,
-  "source_sha256": "0d9aa2727a853da9ed6408f16a33baea1c60be2a039f28b59325424eba48250f",
+  "source_sha256": "d83075494b4561cd2db7dbf09839ca87a8ba92b4b69c86b12d832d54bdac699b",
   "shards": [
     {
       "index": 0,
@@ -41,8 +41,8 @@
       "index": 4,
       "path": "shard-004.json",
       "rows": 10605,
-      "bytes": 10180703,
-      "sha256": "3038340f9b28d106c6cb45e18e2ea052e3635f7df4924d8cb8f2fbd1749e46ad"
+      "bytes": 10180271,
+      "sha256": "0315f9c4b7c5a8232a3411e361887b939a3d71f3da8a6d179087541000f5c20e"
     },
     {
       "index": 5,
@@ -55,15 +55,15 @@
       "index": 6,
       "path": "shard-006.json",
       "rows": 11378,
-      "bytes": 11754429,
-      "sha256": "b1c7d0928c0aba424aef6d3a4f99a2383dd9f8175a32293abd9ed45198eb7787"
+      "bytes": 11754597,
+      "sha256": "699437192aeef38388a4f2cea6adfc1482d1c7dcb94f0eadfb4ef5f23a850de7"
     },
     {
       "index": 7,
       "path": "shard-007.json",
       "rows": 6573,
-      "bytes": 5899238,
-      "sha256": "82f729e3a9c3705d9160f6d93027a45cd379dd0ed88ee4a0b7d482523504859b"
+      "bytes": 5899761,
+      "sha256": "89a3901f5d958e7351db357efe7b8e620e745c180b4b9726b4bbbbddadd05feb"
     },
     {
       "index": 8,
@@ -76,8 +76,8 @@
       "index": 9,
       "path": "shard-009.json",
       "rows": 8668,
-      "bytes": 8275639,
-      "sha256": "750755b354ab5564ef95b3212cfb4dc53836ba17dda43acacc493f34b242d90b"
+      "bytes": 8275423,
+      "sha256": "6ee5107b234c898fecdc337f33ce6b94e23fa9632823d6b19b67a84a751029e9"
     },
     {
       "index": 10,
@@ -125,8 +125,8 @@
       "index": 16,
       "path": "shard-016.json",
       "rows": 5715,
-      "bytes": 5323859,
-      "sha256": "e9bc0734f21b90f3c4668438e8d3e20d03a9f04ef03bbf96f4e1ca0c93aa76e0"
+      "bytes": 5325011,
+      "sha256": "f2d21219fea38eb22dee709dfbed3e0791537fdeb153145992d18c9386c7b149"
     },
     {
       "index": 17,
@@ -153,8 +153,8 @@
       "index": 20,
       "path": "shard-020.json",
       "rows": 5441,
-      "bytes": 5055594,
-      "sha256": "d8f245fdc490bf3578b2957baac3de021b668dd07546fae91beab202bd404603"
+      "bytes": 5055770,
+      "sha256": "5b8bc91c23271c710a93468603992f0dfbc4a54f5d09af3585a3b025a8fd2c12"
     },
     {
       "index": 21,
@@ -174,15 +174,15 @@
       "index": 23,
       "path": "shard-023.json",
       "rows": 8493,
-      "bytes": 8726073,
-      "sha256": "a23e1bc981d6447ca2a8fadad3de99ca57d0c05d898c68a604ac74b7db0be139"
+      "bytes": 8725836,
+      "sha256": "ae5de6fa0a9b460e72cd68c76450ea84f63fa336bdfa9d483755470e9093b7ff"
     },
     {
       "index": 24,
       "path": "shard-024.json",
       "rows": 7100,
-      "bytes": 6127821,
-      "sha256": "846c412cd57b3bb624beb0456f57ee171528f509726ea8feade6b83fab241e82"
+      "bytes": 6127986,
+      "sha256": "7be3e97951475b8c247ab25a2915fc9788e0ee932bf15164b0071195beac0498"
     },
     {
       "index": 25,
@@ -195,15 +195,15 @@
       "index": 26,
       "path": "shard-026.json",
       "rows": 8809,
-      "bytes": 9265161,
-      "sha256": "09b2a012d470e602388ca23874bf4501861e4f49afabc1780d2d332e3c76e294"
+      "bytes": 9261466,
+      "sha256": "dff57c6b9121c405308fc5f891afd9db9c702edfd428f85fa90c221547af867e"
     },
     {
       "index": 27,
       "path": "shard-027.json",
       "rows": 12131,
-      "bytes": 10667057,
-      "sha256": "64600cc75c00d0d38366e0906925287a468c05d98b96d0a3ce293ed0ee87dcb5"
+      "bytes": 10666805,
+      "sha256": "8beed62110fab4bb40e8d23a15fa2db31a9ee1e8786f1b62330f619586fd2eb3"
     },
     {
       "index": 28,
@@ -216,8 +216,8 @@
       "index": 29,
       "path": "shard-029.json",
       "rows": 9241,
-      "bytes": 9183645,
-      "sha256": "5d6e5f713edd44006f0e9e129bbae09957b0d0cead20ed72880967a40d19db26"
+      "bytes": 9183741,
+      "sha256": "887a48dff6ed9c58a836cff72a7792e4c46f9746bbd7c4f1f12be4566cab1df5"
     },
     {
       "index": 30,
