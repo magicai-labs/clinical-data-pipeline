@@ -1,14 +1,14 @@
 {
   "schema_version": 3,
   "source": "pubchem",
-  "last_collected_at": "2026-11-09T15:42:14Z",
-  "last_changed_at": "2026-11-09T15:42:14Z",
+  "last_collected_at": "2026-11-10T13:59:34Z",
+  "last_changed_at": "2026-11-10T13:59:34Z",
   "latest_file": "snapshots/clinical_trials/latest/trials/manifest.json",
-  "latest_checksum": "a4b3580a7208777e302441321c61b43dec6c17354f5f8e1a59d01bad573f6312",
+  "latest_checksum": "05e963bbec9b242a778babdacc7e79d36fe4e80d81258610ec6622c7e162ab02",
   "latest_row_count": 276150,
   "history_count": 132,
-  "last_pruned_count": 0,
-  "latest_snapshot": "snapshots/clinical_trials/history/20261109T154214Z/trials/manifest.json",
+  "last_pruned_count": 3,
+  "latest_snapshot": "snapshots/clinical_trials/history/20261110T135934Z/trials/manifest.json",
   "history_counts": {
     "trials": 132,
     "compounds": 130,
@@ -16,32 +16,33 @@
   },
   "changed_assets": [
     "trials",
-    "compounds"
+    "compounds",
+    "trials_compact"
   ],
   "assets": {
     "trials": {
       "latest_file": "snapshots/clinical_trials/latest/trials/manifest.json",
-      "latest_checksum": "a4b3580a7208777e302441321c61b43dec6c17354f5f8e1a59d01bad573f6312",
+      "latest_checksum": "05e963bbec9b242a778babdacc7e79d36fe4e80d81258610ec6622c7e162ab02",
       "latest_row_count": 276150,
       "latest_manifest": "snapshots/clinical_trials/latest/trials/manifest.json",
       "shard_count": 32,
-      "latest_snapshot": "snapshots/clinical_trials/history/20261109T154214Z/trials/manifest.json"
+      "latest_snapshot": "snapshots/clinical_trials/history/20261110T135934Z/trials/manifest.json"
     },
     "compounds": {
       "latest_file": "snapshots/clinical_trials/latest/compounds/manifest.json",
-      "latest_checksum": "213199cbaaf36e10afc2bf13337a6a83dd0ce0869e940d847a47c2150ba2fc7e",
+      "latest_checksum": "146aed878552d8159904154ef8c5fe609c9ec18296c10e7ff0dfa7bd799b4601",
       "latest_row_count": 12157,
       "latest_manifest": "snapshots/clinical_trials/latest/compounds/manifest.json",
       "shard_count": 32,
-      "latest_snapshot": "snapshots/clinical_trials/history/20261109T154214Z/compounds/manifest.json"
+      "latest_snapshot": "snapshots/clinical_trials/history/20261110T135934Z/compounds/manifest.json"
     },
     "trials_compact": {
       "latest_file": "snapshots/clinical_trials/latest/trials_compact/manifest.json",
-      "latest_checksum": "d6fe674250162d89bdce6907e81d640c52b113bcc187a6c22f554263ccb5a4c0",
+      "latest_checksum": "42a567dcb3261add7bcb99be02a2ed657c3e48a3337a20b48958ca9a1a12c391",
       "latest_row_count": 276150,
       "latest_manifest": "snapshots/clinical_trials/latest/trials_compact/manifest.json",
       "shard_count": 32,
-      "latest_snapshot": "snapshots/clinical_trials/history/20261108T130648Z/trials_compact/manifest.json"
+      "latest_snapshot": "snapshots/clinical_trials/history/20261110T135934Z/trials_compact/manifest.json"
     }
   }
 }
