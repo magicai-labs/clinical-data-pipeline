@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "asset": "trials_compact",
-  "generated_at": "2026-11-11T12:31:48Z",
+  "generated_at": "2026-11-12T14:15:30Z",
   "format": "json-array",
   "compression": null,
   "shard_strategy": "cid_modulo",
