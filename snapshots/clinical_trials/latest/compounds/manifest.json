@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "asset": "compounds",
-  "generated_at": "2026-11-24T17:14:18Z",
+  "generated_at": "2026-11-25T17:19:28Z",
   "format": "json-array",
   "compression": null,
   "shard_strategy": "cid_modulo",
   "shard_count": 32,
   "row_count": 12156,
-  "source_sha256": "abd53c6e6ce3b75b352278475e32d28cd0b6a058ec13934b51f0e3cee2080670",
+  "source_sha256": "610752c2d8ac468fab10d99588b11e08df2a9cc26d578e52bc7401c58601650a",
   "shards": [
     {
       "index": 0,
@@ -55,8 +55,8 @@
       "index": 6,
       "path": "shard-006.json",
       "rows": 385,
-      "bytes": 133222,
-      "sha256": "6ed045d99becd68e1f75946d447de3df95a1586bf15427bcbb89e2b6f485ef43"
+      "bytes": 133012,
+      "sha256": "e1fe5a3905ef24e3183983b35e18c3680c120e32e32582e4f840d3326d498ec2"
     },
     {
       "index": 7,
@@ -104,8 +104,8 @@
       "index": 13,
       "path": "shard-013.json",
       "rows": 364,
-      "bytes": 119778,
-      "sha256": "18ef2e5f5cfe267da64ffb420060bc91ca5d79ff0baa75de15dce03ad9e986a6"
+      "bytes": 119676,
+      "sha256": "3385902b327c7038abc6096c2ece7c31772c65da2fa10717413f5f198448de48"
     },
     {
       "index": 14,
@@ -202,15 +202,15 @@
       "index": 27,
       "path": "shard-027.json",
       "rows": 385,
-      "bytes": 129569,
-      "sha256": "daf8f1918c1810cbb8fad1b490c3d7420772657c2491b91529cafe522336ea3f"
+      "bytes": 129471,
+      "sha256": "e33f3b88b3713169c9cdc1f253ef0f438c161fcfdc873959e06ee89e46524bee"
     },
     {
       "index": 28,
       "path": "shard-028.json",
       "rows": 404,
-      "bytes": 140422,
-      "sha256": "cbfd9fac5cec5420284d06e65e028e8b4e4b602543bfa176aaedcf13fb1fc234"
+      "bytes": 140177,
+      "sha256": "3a428aeab906199e63673f46499217445fb979585c6de775fd86f98c603918ae"
     },
     {
       "index": 29,
@@ -230,8 +230,8 @@
       "index": 31,
       "path": "shard-031.json",
       "rows": 375,
-      "bytes": 135071,
-      "sha256": "86e9caf8572036050b018251ca8bd5a2fc4691fb72708c8d4fd896656ca3545a"
+      "bytes": 134862,
+      "sha256": "8c813dcb349c3abca017ffd05088903a40afce54d9cb9f2d2b8a382ae6ee4437"
     }
   ]
 }
